@@ -36,6 +36,7 @@ const RegisterForm = () => {
   const [selectedRole, setSelectedRole] = useState<string | null>(null);
 
   useEffect(() => {
+    if (!state) return;
     if (state.success) {
       toast.success(state.message || "Registration Successful");
     }

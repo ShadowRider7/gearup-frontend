@@ -64,14 +64,12 @@ export const loginAction = async (
       redirect(redirectTo);
     }
     if (decodedToken.role === "CUSTOMER") {
-      redirect("/dashboard");
+      redirect("/dashboard/customer");
     } else if (decodedToken.role === "ADMIN") {
-      redirect("/admin-dashboard");
+      redirect("/dashboard/admin");
     } else if (decodedToken.role === "PROVIDER") {
-      redirect("/provider-dashboard");
+      redirect("/dashboard/provider");
     }
-    console.log(redirect);
-    console.log("first");
   }
 
   return result;
@@ -171,12 +169,12 @@ export const registerAction = async (
     ) {
       redirect(redirectTo);
     }
-    if (decodedToken.role === "USER") {
-      redirect("/dashboard");
+    if (decodedToken.role === "CUSTOMER") {
+      redirect("/dashboard/customer");
     } else if (decodedToken.role === "ADMIN") {
-      redirect("/admin-dashboard");
+      redirect("/dashboard/admin");
     } else if (decodedToken.role === "PROVIDER") {
-      redirect("/provider-dashboard");
+      redirect("/dashboard/provider");
     }
   }
 

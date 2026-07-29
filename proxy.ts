@@ -62,11 +62,11 @@ export async function proxy(request: NextRequest) {
 
   if (accessToken && AUTH_ROUTES.includes(pathname)) {
     if (userRole === "CUSTOMER") {
-      return NextResponse.redirect(new URL("/dashboard", request.url));
+      return NextResponse.redirect(new URL("/dashboard/customer", request.url));
     } else if (userRole === "ADMIN") {
-      return NextResponse.redirect(new URL("/admin-dashboard", request.url));
+      return NextResponse.redirect(new URL("/dashboard/admin", request.url));
     } else if (userRole === "PROVIDER") {
-      return NextResponse.redirect(new URL("/author-dashboard", request.url));
+      return NextResponse.redirect(new URL("/dashboard/provider", request.url));
     } else {
       return NextResponse.redirect(new URL("/", request.url));
     }
@@ -88,12 +88,12 @@ export async function proxy(request: NextRequest) {
     return NextResponse.redirect(loginUrl);
   }
 
-  if (pathname.startsWith("/dashboard") && userRole !== "CUSTOMER") {
+  if (pathname.startsWith("/dashboard/customer") && userRole !== "CUSTOMER") {
     return NextResponse.redirect(new URL("/not-found", request.url));
-  } else if (pathname.startsWith("/admin-dashboard") && userRole !== "ADMIN") {
+  } else if (pathname.startsWith("/dashboard/admin") && userRole !== "ADMIN") {
     return NextResponse.redirect(new URL("/not-found", request.url));
   } else if (
-    pathname.startsWith("/author-dashboard") &&
+    pathname.startsWith("/dashboard/provider") &&
     userRole !== "PROVIDER"
   ) {
     return NextResponse.redirect(new URL("/not-found", request.url));
