@@ -4,7 +4,7 @@ import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import jwt, { JwtPayload } from "jsonwebtoken";
 import { loginState, registerState } from "@/lib/type";
-import { registerSchema } from "./schema";
+import { loginSchema, registerSchema } from "./schema";
 
 export const loginAction = async (
   redirectTo: string,
@@ -13,6 +13,18 @@ export const loginAction = async (
 ) => {
   const email = formData.get("email");
   const password = formData.get("password");
+
+  const validationResult = loginSchema.safeParse({ email, password });
+
+  if (!validationResult.success) {
+    const firstError = validationResult.error.issues[0];
+
+    return {
+      success: false,
+      statusCode: 400,
+      message: firstError ? firstError.message : "Validation failed",
+    };
+  }
 
   const payload = {
     email,

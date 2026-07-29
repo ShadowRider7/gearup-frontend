@@ -10,12 +10,16 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { ChevronDown, LogOut, Settings, User } from "lucide-react";
+import { NavbarProps } from "@/lib/type";
+import { logout } from "@/service/logout";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
 
-// Navigation items array for easy management
 const NAV_ITEMS = [
-  { label: "Home", href: "#" },
+  { label: "Home", href: "/" },
   { label: "About", href: "#" },
-  { label: "Services", href: "#" },
+  { label: "gears", href: "/gears" },
   { label: "Contact", href: "#" },
 ];
 
@@ -26,11 +30,15 @@ const USER_MENU_ITEMS = [
   { label: "Logout", icon: LogOut, action: "logout", isDangerous: true },
 ];
 
-export function Navbar() {
-  const handleUserAction = (action: string) => {
-    console.log(`User action: ${action}`);
-    // Handle user actions here
-    // e.g., routing, API calls, etc.
+export function Navbar({ user }: NavbarProps) {
+  const router = useRouter();
+
+  const handleUserAction = async (action: string) => {
+    if (action === "logout") {
+      await logout();
+      toast.success("Logged out successfully!");
+      router.push("/login");
+    }
   };
 
   return (
@@ -55,52 +63,59 @@ export function Navbar() {
             ))}
           </div>
 
-          {/* User Dropdown */}
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="ghost" className="gap-2 pl-2 pr-1">
-                <Avatar className="size-8">
-                  <AvatarImage
-                    src="https://github.com/shadcn.png"
-                    alt="@shadcn"
-                  />
-                  <AvatarFallback>JD</AvatarFallback>
-                </Avatar>
-                <ChevronDown className="size-4" />
-              </Button>
-            </DropdownMenuTrigger>
+          {user.success ? (
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" className="gap-2 pl-2 pr-1">
+                  <Avatar className="size-8">
+                    <AvatarImage
+                      src={user.data?.userProfile?.profile.profilePhoto}
+                      alt="profile-photo"
+                    />
+                    <AvatarFallback></AvatarFallback>
+                  </Avatar>
+                  <ChevronDown className="size-4" />
+                </Button>
+              </DropdownMenuTrigger>
 
-            <DropdownMenuContent align="end" className="w-56">
-              {/* User Info Section */}
-              <div className="px-2 py-1.5">
-                <p className="text-sm font-medium text-foreground">John Doe</p>
-                <p className="text-xs text-muted-foreground">
-                  john.doe@example.com
-                </p>
-              </div>
+              <DropdownMenuContent align="end" className="w-56">
+                {/* User Info Section */}
+                <div className="px-2 py-1.5">
+                  <p className="text-sm font-medium text-foreground">
+                    {user.data?.userProfile?.name}
+                  </p>
+                  <p className="text-xs text-muted-foreground">
+                    {user.data?.userProfile?.email}
+                  </p>
+                </div>
 
-              <DropdownMenuSeparator />
+                <DropdownMenuSeparator />
 
-              {/* Menu Items */}
-              {USER_MENU_ITEMS.map((item) => {
-                const Icon = item.icon;
-                return (
-                  <DropdownMenuItem
-                    key={item.action}
-                    onClick={() => handleUserAction(item.action)}
-                    className={
-                      item.isDangerous
-                        ? "text-destructive focus:text-destructive"
-                        : ""
-                    }
-                  >
-                    <Icon className="mr-2 size-4" />
-                    <span>{item.label}</span>
-                  </DropdownMenuItem>
-                );
-              })}
-            </DropdownMenuContent>
-          </DropdownMenu>
+                {/* Menu Items */}
+                {USER_MENU_ITEMS.map((item) => {
+                  const Icon = item.icon;
+                  return (
+                    <DropdownMenuItem
+                      key={item.action}
+                      onClick={() => handleUserAction(item.action)}
+                      className={
+                        item.isDangerous
+                          ? "text-destructive focus:text-destructive"
+                          : ""
+                      }
+                    >
+                      <Icon className="mr-2 size-4" />
+                      <span>{item.label}</span>
+                    </DropdownMenuItem>
+                  );
+                })}
+              </DropdownMenuContent>
+            </DropdownMenu>
+          ) : (
+            <Link href={"/login"}>
+              <Button className="cursor-pointer">Login</Button>
+            </Link>
+          )}
         </div>
       </div>
     </nav>
