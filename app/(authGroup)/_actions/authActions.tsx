@@ -54,6 +54,7 @@ export const loginAction = async (
       sameSite: "lax",
     });
     const decodedToken = jwt.decode(result.data.accessToken) as JwtPayload;
+    console.log(decodedToken, "decoded");
     if (
       redirectTo &&
       typeof redirectTo === "string" &&
@@ -62,13 +63,15 @@ export const loginAction = async (
     ) {
       redirect(redirectTo);
     }
-    if (decodedToken.role === "USER") {
+    if (decodedToken.role === "CUSTOMER") {
       redirect("/dashboard");
     } else if (decodedToken.role === "ADMIN") {
       redirect("/admin-dashboard");
     } else if (decodedToken.role === "PROVIDER") {
       redirect("/provider-dashboard");
     }
+    console.log(redirect);
+    console.log("first");
   }
 
   return result;

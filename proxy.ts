@@ -5,8 +5,10 @@ import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
 
 import { jwtUtils } from "./utils/jwt";
+import { getNewAccessToken } from "./service/refreshToken";
 
 const AUTH_ROUTES = ["/login", "/register"];
+
 const PUBLIC_ROUTES = ["/", "/gears"];
 
 export async function proxy(request: NextRequest) {
@@ -14,10 +16,10 @@ export async function proxy(request: NextRequest) {
 
   const cookieStore = await cookies();
 
-  const accessToken = request.cookies.get("accessToken")?.value;
+  let accessToken = request.cookies.get("accessToken")?.value;
   const refreshToken = request.cookies.get("refreshToken")?.value;
 
-  const decodedAccessToken = accessToken
+  let decodedAccessToken = accessToken
     ? jwtUtils.verifyToken(accessToken, process.env.JWT_ACCESS_SECRET as string)
     : null;
 
@@ -27,6 +29,26 @@ export async function proxy(request: NextRequest) {
         process.env.JWT_REFRESH_SECRET as string,
       )
     : null;
+
+  if (!decodedAccessToken?.success && decodedRefreshToken?.success) {
+    const result = await getNewAccessToken();
+
+    if (result.success) {
+      const newAccessToken = result.data.accessToken;
+
+      cookieStore.set("accessToken", newAccessToken, {
+        httpOnly: true,
+        maxAge: 60 * 60 * 24,
+        sameSite: "lax",
+      });
+
+      accessToken = newAccessToken;
+      decodedAccessToken = jwtUtils.verifyToken(
+        accessToken!,
+        process.env.JWT_ACCESS_SECRET as string,
+      );
+    }
+  }
 
   let userRole = null;
 
@@ -39,11 +61,11 @@ export async function proxy(request: NextRequest) {
   }
 
   if (accessToken && AUTH_ROUTES.includes(pathname)) {
-    if (userRole === "USER") {
+    if (userRole === "CUSTOMER") {
       return NextResponse.redirect(new URL("/dashboard", request.url));
     } else if (userRole === "ADMIN") {
       return NextResponse.redirect(new URL("/admin-dashboard", request.url));
-    } else if (userRole === "AUTHOR") {
+    } else if (userRole === "PROVIDER") {
       return NextResponse.redirect(new URL("/author-dashboard", request.url));
     } else {
       return NextResponse.redirect(new URL("/", request.url));
@@ -66,13 +88,13 @@ export async function proxy(request: NextRequest) {
     return NextResponse.redirect(loginUrl);
   }
 
-  if (pathname.startsWith("/dashboard") && userRole !== "USER") {
+  if (pathname.startsWith("/dashboard") && userRole !== "CUSTOMER") {
     return NextResponse.redirect(new URL("/not-found", request.url));
   } else if (pathname.startsWith("/admin-dashboard") && userRole !== "ADMIN") {
     return NextResponse.redirect(new URL("/not-found", request.url));
   } else if (
     pathname.startsWith("/author-dashboard") &&
-    userRole !== "AUTHOR"
+    userRole !== "PROVIDER"
   ) {
     return NextResponse.redirect(new URL("/not-found", request.url));
   }
@@ -81,5 +103,9 @@ export async function proxy(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/((?!api|_next/static|favicon.ico|_next/image|.*\\.png$).*)"],
+  matcher: [
+    // '/dashboard/:path*',
+    // '/admin-dashboard/:path*',
+    "/((?!api|_next/static|favicon.ico|_next/image|.*\\.png$).*)",
+  ],
 };
