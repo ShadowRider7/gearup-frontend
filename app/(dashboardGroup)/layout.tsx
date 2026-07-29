@@ -1,5 +1,12 @@
-const DashboardLayout = async ({ children }: { children: React.ReactNode }) => {
-  return <div className="">{children}</div>;
+import { Navbar } from "@/components/shared/navbar";
+
+const PublicLayout = async ({ children }: { children: React.ReactNode }) => {
+  return (
+    <div>
+      <Navbar></Navbar>
+      {children}
+    </div>
+  );
 };
 
-export default DashboardLayout;
+export default PublicLayout;
