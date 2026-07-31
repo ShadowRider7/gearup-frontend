@@ -50,10 +50,10 @@ export function Navbar({ user }: NavbarProps) {
             <Link href="/" className="flex items-center">
               <Image
                 src={GearUpLogo}
-                alt="gearUP"
-                height={200}
-                width={200}
-                className="w-50 h-auto"
+                alt="GearUp Logo"
+                width={150}
+                height={50}
+                className="w-32 h-auto"
               />
             </Link>
           </div>

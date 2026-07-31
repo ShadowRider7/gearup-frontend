@@ -1,7 +1,9 @@
 import { LucideProps } from "lucide-react";
 import { ForwardRefExoticComponent, RefAttributes } from "react";
 
-export type loginState = {
+// Use TitleCase naming conventions for Type Exports to match standard TS guidelines
+
+export type LoginState = {
   success: boolean;
   statusCode: number;
   message: string;
@@ -11,7 +13,7 @@ export type loginState = {
   };
 };
 
-export type registerState = {
+export type RegisterState = {
   success: boolean;
   statusCode: number;
   message: string;
@@ -53,6 +55,7 @@ export type IUser = {
     };
   };
 };
+
 export type NavbarProps = {
   user: IUser;
 };
@@ -65,26 +68,7 @@ export type ISidebarItem = {
   >;
 };
 
-export type categoryItems = {
-  success: boolean;
-  statusCode: number;
-  message: string;
-  data: {
-    categoryList: {
-      data: [
-        {
-          id: string;
-          name: string;
-          description: string;
-          createdAt: string;
-          updatedAt: string;
-        },
-        gearItem[],
-      ];
-    };
-  };
-};
-export type provider = {
+export type Provider = {
   id: string;
   name: string;
   email: string;
@@ -94,7 +78,7 @@ export type provider = {
   updatedAt: string;
 };
 
-export type category = {
+export type Category = {
   id: string;
   name: string;
   description: string;
@@ -102,7 +86,7 @@ export type category = {
   updatedAt: string;
 };
 
-export type gearItem = {
+export type Gear = {
   id: string;
   providerId: string;
   categoryId: string;
@@ -116,44 +100,35 @@ export type gearItem = {
   isAvailable: boolean;
   createdAt: string;
   updatedAt: string;
-  category: category;
-  provider: provider;
+  category: Category;
+  provider: Provider;
   _count: {
     rentals: number;
     reviews: number;
   };
   averageRating: number;
 };
-export type gearItems = {
+
+// Fixed CategoryItems logic: Changed tuple format into an array of categories containing gears
+export type CategoryItems = {
+  success: boolean;
+  statusCode: number;
+  message: string;
+  data: {
+    categoryList: {
+      data: Array<Category & { gearItems?: Gear[] }>;
+    };
+  };
+};
+
+// Fixed GearItems array logic: Replaced the 1-element tuple with standard Array mapping
+export type GearItems = {
   success: boolean;
   statusCode: number;
   message: string;
   data: {
     gearItemsList: {
-      data: [
-        {
-          id: string;
-          providerId: string;
-          categoryId: string;
-          name: string;
-          description: string;
-          brand: string;
-          pricePerDay: number;
-          stock: number;
-          images: string[];
-          specifications: Record<string, string | boolean | number>;
-          isAvailable: boolean;
-          createdAt: string;
-          updatedAt: string;
-          category: category;
-          provider: provider;
-          _count: {
-            rentals: number;
-            reviews: number;
-          };
-          averageRating: number;
-        },
-      ];
+      data: Gear[];
       meta: {
         page: number;
         limit: number;
@@ -164,7 +139,7 @@ export type gearItems = {
   };
 };
 
-export type rentalOrder = {
+export type RentalOrder = {
   success: boolean;
   statusCode: number;
   message: string;
@@ -180,33 +155,31 @@ export type rentalOrder = {
       status: string;
       createdAt: string;
       updatedAt: string;
-      gearItem: gearItem;
+      gearItem: Gear; // Fixed missing reference to uppercase 'Gear'
       customer: IUser["data"]["userProfile"];
     };
   };
 };
 
-export type paymentHistory = {
+export type PaymentHistory = {
   success: boolean;
   statusCode: number;
   message: string;
-  data: [
-    {
-      id: string;
-      rentalOrderId: string;
-      stripePaymentIntentId: string;
-      stripeCustomerId: string;
-      amount: number;
-      method: string;
-      status: string;
-      paidAt: string;
-      createdAt: string;
-      updatedAt: string;
-    },
-  ];
+  data: Array<{
+    id: string;
+    rentalOrderId: string;
+    stripePaymentIntentId: string;
+    stripeCustomerId: string;
+    amount: number;
+    method: string;
+    status: string;
+    paidAt: string;
+    createdAt: string;
+    updatedAt: string;
+  }>;
 };
 
-export type review = {
+export type Review = {
   success: boolean;
   statusCode: number;
   message: string;

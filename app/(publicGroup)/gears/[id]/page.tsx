@@ -1,7 +1,7 @@
 import React from "react";
 
-const GearItems = () => {
-  return <div>GearItems</div>;
+const GearPage = () => {
+  return <div>GearPage</div>;
 };
 
-export default GearItems;
+export default GearPage;

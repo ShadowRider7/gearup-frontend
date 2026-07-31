@@ -7,9 +7,8 @@ import { getAllBrands } from "./_actions/getAllBrands";
 
 export default async function HomePage() {
   const category = await getCategoryList();
-  // const gearitems = await getGearList();
-  await getAllBrands();
 
+  // const gearitems = await getGearList();
   return (
     <div className="min-h-screen bg-background">
       {/* Hero Section */}
