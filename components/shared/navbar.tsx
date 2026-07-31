@@ -1,6 +1,8 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import Image from "next/image";
+import GearUpLogo from "../../public/gearup-logo.svg";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -19,11 +21,10 @@ import Link from "next/link";
 const NAV_ITEMS = [
   { label: "Home", href: "/" },
   { label: "About", href: "#" },
-  { label: "gears", href: "/gears" },
+  { label: "Browse gears", href: "/gears" },
   { label: "Contact", href: "#" },
 ];
 
-// User dropdown menu items
 const USER_MENU_ITEMS = [
   { label: "Profile", icon: User, action: "profile" },
   { label: "Settings", icon: Settings, action: "settings" },
@@ -42,24 +43,31 @@ export function Navbar({ user }: NavbarProps) {
   };
 
   return (
-    <nav className="border-b border-border bg-background">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+    <nav className="border-b mb-5 border-border bg-background">
+      <div className="mx-auto my-2 max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
-          {/* Logo */}
           <div className="flex items-center gap-2">
-            <div className="text-2xl font-bold text-primary">Logo</div>
+            <Link href="/" className="flex items-center">
+              <Image
+                src={GearUpLogo}
+                alt="gearUP"
+                height={200}
+                width={200}
+                className="w-50 h-auto"
+              />
+            </Link>
           </div>
 
           {/* Nav Items */}
           <div className="hidden md:flex items-center gap-8">
             {NAV_ITEMS.map((item) => (
-              <a
+              <Link
                 key={item.label}
                 href={item.href}
                 className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
               >
                 {item.label}
-              </a>
+              </Link>
             ))}
           </div>
 

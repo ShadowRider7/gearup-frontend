@@ -54,7 +54,7 @@ export const loginAction = async (
       sameSite: "lax",
     });
     const decodedToken = jwt.decode(result.data.accessToken) as JwtPayload;
-    console.log(decodedToken, "decoded");
+
     if (
       redirectTo &&
       typeof redirectTo === "string" &&
@@ -121,7 +121,7 @@ export const registerAction = async (
     bio: bio || undefined,
     profilePhoto: profilePhoto || undefined,
   };
-  console.log(payload);
+
   const res = await fetch(`${process.env.BACKEND_API_URL}/api/users/register`, {
     method: "POST",
     headers: {
