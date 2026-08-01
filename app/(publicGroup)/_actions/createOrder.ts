@@ -1,7 +1,7 @@
 "use server";
 
 import { orderPayload } from "@/lib/type";
-import { cookies } from "next/headers";
+import { isAccessTokenExist } from "@/service/refreshToken";
 
 export const createOrder = async (
   prevState: orderPayload,
@@ -13,15 +13,7 @@ export const createOrder = async (
     endDate: formData.get("endDate") as string,
     quantity: Number(formData.get("quantity")),
   };
-  const cookieStore = cookies();
-
-  const accessToken = (await cookieStore).get("accessToken")?.value;
-  if (!accessToken) {
-    return {
-      success: false,
-      message: "User not logged in!",
-    };
-  }
+  const accessToken = await isAccessTokenExist();
 
   const res = await fetch(`${process.env.BACKEND_API_URL}/api/rentals`, {
     method: "POST",

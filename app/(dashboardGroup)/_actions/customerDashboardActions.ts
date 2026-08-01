@@ -1,17 +1,9 @@
 "use server";
 
-import { cookies } from "next/headers";
+import { isAccessTokenExist } from "@/service/refreshToken";
 
 export const getCustomerOrderList = async () => {
-  const cookieStore = cookies();
-
-  const accessToken = (await cookieStore).get("accessToken")?.value;
-  if (!accessToken) {
-    return {
-      success: false,
-      message: "User not logged in!",
-    };
-  }
+  const accessToken = await isAccessTokenExist();
 
   const res = await fetch(`${process.env.BACKEND_API_URL}/api/rentals`, {
     headers: {

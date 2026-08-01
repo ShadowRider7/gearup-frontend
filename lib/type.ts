@@ -124,6 +124,20 @@ export type UserRentalOrders = {
     >;
   };
 };
+
+export type ProviderRentalOrders = {
+  success: boolean;
+  statusCode: number;
+  message: string;
+  data: {
+    orders: Array<
+      RentalOrder["data"]["rentalOrder"] & {
+        payment?: PaymentHistory["data"][0];
+        review?: Review["data"]["review"];
+      }
+    >;
+  };
+};
 export type CategoryItems = {
   success: boolean;
   statusCode: number;
@@ -156,6 +170,16 @@ export interface orderPayload {
   startDate: string;
   endDate: string;
   quantity: number;
+}
+export interface gearPayload {
+  categoryId: string;
+  name: string;
+  description: string;
+  brand: string;
+  pricePerDay: number;
+  stock: number;
+  images: string[];
+  specifications: Record<string, string | boolean | number>;
 }
 
 export type RentalOrder = {
@@ -215,3 +239,11 @@ export type Review = {
     };
   };
 };
+export type RentalStatus =
+  | "PLACED"
+  | "CONFIRMED"
+  | "PAYMENT_INITIATED"
+  | "PAID"
+  | "PICKED_UP"
+  | "RETURNED"
+  | "CANCELLED";
