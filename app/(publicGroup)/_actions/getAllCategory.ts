@@ -10,10 +10,6 @@ export const getCategoryList = async () => {
       },
     });
 
-    if (!res.ok) {
-      throw new Error("Failed to fetch categories");
-    }
-
     const result = await res.json();
 
     const categoryList = result?.data?.categoryList || [];

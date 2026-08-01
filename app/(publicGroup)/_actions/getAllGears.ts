@@ -23,7 +23,16 @@ export const getGearList = async (query?: {
     if (query.isAvailable) {
       params.set("isAvailable", String(query.isAvailable));
     }
-  }
+
+    // Correctly placed within the safe scope of the `if (query)` boundary condition check
+    if (query.page) {
+      params.set("page", String(query.page));
+    }
+
+    if (query.limit) {
+      params.set("limit", String(query.limit));
+    }
+  } // This closes 'if (query)' perfectly now
 
   const res = await fetch(
     `${process.env.BACKEND_API_URL}/api/gear?${params.toString()}`,
@@ -32,11 +41,9 @@ export const getGearList = async (query?: {
       next: { tags: ["gear-items"] },
     },
   );
+
   if (!res.ok) {
-    const errorText = await res
-      .text()
-      .catch(() => "Unknown backend database crash");
-    throw new Error(`Backend Error (${res.status}): ${errorText}`);
+    throw new Error(`Failed to fetch gear items: ${res.statusText}`);
   }
 
   return await res.json();

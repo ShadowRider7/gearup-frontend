@@ -1,8 +1,6 @@
 import { LucideProps } from "lucide-react";
 import { ForwardRefExoticComponent, RefAttributes } from "react";
 
-// Use TitleCase naming conventions for Type Exports to match standard TS guidelines
-
 export type LoginState = {
   success: boolean;
   statusCode: number;
@@ -102,14 +100,30 @@ export type Gear = {
   updatedAt: string;
   category: Category;
   provider: Provider;
+  reviews: Review[];
   _count: {
     rentals: number;
     reviews: number;
   };
   averageRating: number;
 };
-
-// Fixed CategoryItems logic: Changed tuple format into an array of categories containing gears
+export interface OrderFormProps {
+  gearItem: Gear;
+  user: IUser;
+}
+export type UserRentalOrders = {
+  success: boolean;
+  statusCode: number;
+  message: string;
+  data: {
+    usersRentalOrders: Array<
+      RentalOrder["data"]["rentalOrder"] & {
+        payment?: PaymentHistory["data"][0];
+        review?: Review["data"]["review"];
+      }
+    >;
+  };
+};
 export type CategoryItems = {
   success: boolean;
   statusCode: number;
@@ -121,7 +135,6 @@ export type CategoryItems = {
   };
 };
 
-// Fixed GearItems array logic: Replaced the 1-element tuple with standard Array mapping
 export type GearItems = {
   success: boolean;
   statusCode: number;
@@ -138,6 +151,12 @@ export type GearItems = {
     };
   };
 };
+export interface orderPayload {
+  gearItemId: string;
+  startDate: string;
+  endDate: string;
+  quantity: number;
+}
 
 export type RentalOrder = {
   success: boolean;
@@ -155,7 +174,7 @@ export type RentalOrder = {
       status: string;
       createdAt: string;
       updatedAt: string;
-      gearItem: Gear; // Fixed missing reference to uppercase 'Gear'
+      gearItem: Gear;
       customer: IUser["data"]["userProfile"];
     };
   };
