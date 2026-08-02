@@ -11,6 +11,11 @@ export type LoginState = {
   };
 };
 
+export const ROLE_OPTIONS = [
+  { value: "CUSTOMER", label: "Customer" },
+  { value: "PROVIDER", label: "Gear Provider" },
+  { value: "ADMIN", label: "Administrator" },
+];
 export type RegisterState = {
   success: boolean;
   statusCode: number;
@@ -24,6 +29,76 @@ export type RegisterState = {
       status: string;
       createdAt: string;
     };
+  };
+};
+export type AllUsers = {
+  success: boolean;
+  statusCode: number;
+  message: string;
+  data: {
+    users: Array<{
+      id: string;
+      name: string;
+      email: string;
+      role: string;
+      status: string;
+      createdAt: string;
+      updatedAt: string;
+      profile: {
+        id: string;
+        profilePhoto: string;
+        phone: string;
+        address: string;
+        bio: string;
+        userId: string;
+        createdAt: string;
+        updatedAt: string;
+      };
+      rentals: Array<{
+        id: string;
+        customerId: string;
+        gearItemId: string;
+        startDate: string;
+        endDate: string;
+        quantity: number;
+        totalAmount: number;
+        status: string;
+        createdAt: string;
+        updatedAt: string;
+      }>;
+      reviews: Array<{
+        id: string;
+        customerId: string;
+        gearItemId: string;
+        rentalOrderId: string;
+        rating: number;
+        comment: string;
+        createdAt: string;
+        updatedAt: string;
+      }>;
+      gearItems: Array<{
+        id: string;
+        providerId: string;
+        categoryId: string;
+        name: string;
+        description: string;
+        brand: string;
+        pricePerDay: number;
+        stock: number;
+        images: string[];
+        specifications: Record<string, string | boolean | number>;
+        isAvailable: boolean;
+        createdAt: string;
+        updatedAt: string;
+        category: Category;
+        provider: Provider;
+        reviews: Review[];
+        _count: {
+          rentals: number;
+          reviews: number;
+        };
+      }>;
+    }>;
   };
 };
 
@@ -76,6 +151,20 @@ export type Provider = {
   updatedAt: string;
 };
 
+export type CategoryState = {
+  success: boolean;
+  statusCode: number;
+  message: string;
+  data: {
+    result: {
+      id: string;
+      name: string;
+      description: string;
+      createdAt: string;
+      updatedAt: string;
+    };
+  };
+};
 export type Category = {
   id: string;
   name: string;
@@ -84,29 +173,6 @@ export type Category = {
   updatedAt: string;
 };
 
-export type Gear = {
-  id: string;
-  providerId: string;
-  categoryId: string;
-  name: string;
-  description: string;
-  brand: string;
-  pricePerDay: number;
-  stock: number;
-  images: string[];
-  specifications: Record<string, string | boolean | number>;
-  isAvailable: boolean;
-  createdAt: string;
-  updatedAt: string;
-  category: Category;
-  provider: Provider;
-  reviews: Review[];
-  _count: {
-    rentals: number;
-    reviews: number;
-  };
-  averageRating: number;
-};
 export interface OrderFormProps {
   gearItem: Gear;
   user: IUser;
@@ -157,6 +223,29 @@ export type CategoryItems = {
     };
   };
 };
+export type Gear = {
+  id: string;
+  providerId: string;
+  categoryId: string;
+  name: string;
+  description: string;
+  brand: string;
+  pricePerDay: number;
+  stock: number;
+  images: string[];
+  specifications: Record<string, string | boolean | number>;
+  isAvailable: boolean;
+  createdAt: string;
+  updatedAt: string;
+  category: Category;
+  provider: Provider;
+  reviews: Review[];
+  _count: {
+    rentals: number;
+    reviews: number;
+  };
+  averageRating: number;
+};
 
 export type GearItems = {
   success: boolean;
@@ -190,6 +279,30 @@ export interface gearPayload {
   images: string[];
   specifications: Record<string, string | boolean | number>;
 }
+
+export type AllOrders = {
+  success: boolean;
+  statusCode: number;
+  message: string;
+  data: {
+    allOrders: Array<{
+      id: string;
+      customerId: string;
+      gearItemId: string;
+      startDate: string;
+      endDate: string;
+      quantity: number;
+      totalAmount: number;
+      status: string;
+      createdAt: string;
+      updatedAt: string;
+      payment: PaymentHistory["data"][0] | null;
+      review: ReviewState["data"]["review"] | null;
+      gearItem: Gear;
+      customer: IUser["data"]["userProfile"];
+    }>;
+  };
+};
 
 export type RentalOrder = {
   success: boolean;
@@ -257,6 +370,12 @@ export type RentalStatus =
   | "PICKED_UP"
   | "RETURNED"
   | "CANCELLED";
+
+export enum UserStatus {
+  ACTIVE,
+  SUSPENDED,
+}
+export type AdminTabtype = "overview" | "users" | "gear" | "orders";
 
 export type reviewPayload = {
   rentalOrderId: string;

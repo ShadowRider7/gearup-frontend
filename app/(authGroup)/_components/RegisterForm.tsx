@@ -18,12 +18,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-
-const ROLE_OPTIONS = [
-  { value: "CUSTOMER", label: "Customer" },
-  { value: "PROVIDER", label: "Gear Provider" },
-  { value: "ADMIN", label: "Administrator" },
-];
+import { ROLE_OPTIONS } from "@/lib/type";
 
 const RegisterForm = () => {
   const searchParams = useSearchParams();

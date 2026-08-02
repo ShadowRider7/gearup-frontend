@@ -1,18 +1,9 @@
-// components/OrderStatusSelect.tsx
 "use client";
 
 import { useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { updateOrderStatus } from "../_actions/providerDashboardActions";
-
-type RentalStatus =
-  | "PLACED"
-  | "CONFIRMED"
-  | "PAYMENT_INITIATED"
-  | "PAID"
-  | "PICKED_UP"
-  | "RETURNED"
-  | "CANCELLED";
+import { RentalStatus } from "@/lib/type";
 
 interface OrderStatusSelectProps {
   orderId: string;
@@ -41,7 +32,7 @@ export default function OrderStatusSelect({
   // Edge case handle: render completion badge if no forward states exist
   if (options.length === 0) {
     return (
-      <div className="flex flex-col gap-1.5 w-full max-w-[200px]">
+      <div className="flex flex-col gap-1.5 w-full max-w-50">
         <span className="text-xs font-semibold text-gray-500 uppercase tracking-wider">
           Status
         </span>
@@ -67,7 +58,7 @@ export default function OrderStatusSelect({
   };
 
   return (
-    <div className="flex flex-col gap-1.5 w-full max-w-[200px]">
+    <div className="flex flex-col gap-1.5 w-full max-w-50">
       <label className="text-xs font-semibold text-gray-500 uppercase tracking-wider">
         Change Status
       </label>
