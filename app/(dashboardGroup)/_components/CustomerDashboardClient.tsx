@@ -2,32 +2,38 @@
 "use client";
 
 import React, { useState } from "react";
-import Image from "next/image";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { ArrowLeftRight, CreditCard, Package } from "lucide-react";
 import { useRouter } from "next/navigation";
-
+import {
+  Table,
+  TableBody,
+  TableHeader,
+  TableRow,
+  TableHead,
+} from "@/components/ui/table";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { PaymentHistory, UserRentalOrders } from "@/lib/type";
+import OrderRow from "./OrderRow";
 import CheckOutModal from "./CheckOutModal";
-import { UserRentalOrders } from "@/lib/type";
-
+import ReviewModal from "./ReviewModal";
+import PaymentHistoryTable from "./PaymentHistoryTable";
+import ReviewedProductsGrid from "./ReviewedProductsGrid";
 interface CustomerDashboardClientProps {
   customerOrders: UserRentalOrders["data"]["usersRentalOrders"];
+  paymentHistory: PaymentHistory["data"]; // Uses your type structure directly
 }
 
-// Extract the type of a single order item from the array
-type SingleOrder = CustomerDashboardClientProps["customerOrders"][number];
+export type SingleOrder =
+  CustomerDashboardClientProps["customerOrders"][number];
 
 export default function CustomerDashboardClient({
   customerOrders,
+  paymentHistory,
 }: CustomerDashboardClientProps) {
   const router = useRouter();
-
-  // Explicitly tell TypeScript the state can be a SingleOrder or null
   const [selectedOrder, setSelectedOrder] = useState<SingleOrder | null>(null);
+  const [reviewOrder, setReviewOrder] = useState<SingleOrder | null>(null);
 
-  // Update this handler in your CustomerDashboardClient component:
   const handlePaymentRedirectSuccess = (paymentUrl: unknown) => {
-    // Defensive check: verify if it's a string, or drill down if it's still an object
     let finalUrl: string | null = null;
 
     if (typeof paymentUrl === "string") {
@@ -37,12 +43,10 @@ export default function CustomerDashboardClient({
       typeof paymentUrl === "object" &&
       "paymentUrl" in paymentUrl
     ) {
-      // Fallback if the modal still passes the object anyway
       finalUrl = (paymentUrl as any).paymentUrl;
     }
 
     if (finalUrl && finalUrl.startsWith("http")) {
-      console.log("Redirecting directly to Stripe:", finalUrl);
       window.location.href = finalUrl;
     } else {
       console.error("Invalid checkout URL string received:", paymentUrl);
@@ -51,144 +55,88 @@ export default function CustomerDashboardClient({
     }
   };
 
+  // Filter completed/reviewed rental orders cleanly for the reviews grid tab
+  const reviewedOrders = customerOrders.filter(
+    (order) =>
+      (order as any).review !== null && (order as any).review !== undefined,
+  );
+
   return (
     <div className="space-y-6">
-      <div className="bg-card border border-border rounded-xl overflow-hidden shadow-sm">
-        {customerOrders.length === 0 ? (
-          <div className="text-center py-12 text-muted-foreground text-sm font-mono">
-            No historical bookings or rental orders logged yet.
-          </div>
-        ) : (
-          <table className="w-full text-left border-collapse">
-            <thead>
-              <tr className="border-b border-border bg-muted/20">
-                {[
-                  "Item Details",
-                  "Rental Window Dates",
-                  "Total Price",
-                  "Status",
-                  "Payment Options",
-                ].map((h) => (
-                  <th
-                    key={h}
-                    className="px-4 py-3 text-xs font-mono text-muted-foreground uppercase tracking-widest"
-                  >
-                    {h}
-                  </th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {customerOrders.map((order) => {
-                const isPayable =
-                  order.status === "CONFIRMED" ||
-                  order.status === "PAYMENT_INITIATED";
-                const isReturnable = order.status === "PICKED_UP";
-                const gear = order.gearItem || {};
+      <Tabs defaultValue="orders" className="w-full">
+        {/* Navigation Tab Triggers */}
+        <TabsList className="grid w-full max-w-md grid-cols-3 font-mono text-xs uppercase tracking-wider mb-4">
+          <TabsTrigger value="orders">My Orders</TabsTrigger>
+          <TabsTrigger value="payments">Payment History</TabsTrigger>
+          <TabsTrigger value="reviews">Reviewed Products</TabsTrigger>
+        </TabsList>
 
-                return (
-                  <tr
-                    key={order.id}
-                    className="border-b border-border last:border-0 hover:bg-muted/10 transition-colors"
-                  >
-                    {/* Item Details Column Layout */}
-                    <td className="px-4 py-3">
-                      <div className="flex items-center gap-3">
-                        <Avatar className="w-10 h-8 rounded bg-muted flex-shrink-0 relative overflow-hidden">
-                          {gear.images && gear.images[0] ? (
-                            <Image
-                              src={gear.images[0]}
-                              alt={gear.name || "Gear"}
-                              fill
-                              sizes="40px"
-                              className="object-cover"
-                            />
-                          ) : (
-                            <AvatarFallback className="rounded bg-muted flex items-center justify-center w-full h-full">
-                              <Package className="h-4 w-4 text-muted-foreground" />
-                            </AvatarFallback>
-                          )}
-                        </Avatar>
-                        <div>
-                          <span className="text-sm text-foreground font-medium line-clamp-1 max-w-[180px]">
-                            {gear.name || "Unknown Item"}
-                          </span>
-                          <span className="text-[10px] font-mono text-muted-foreground block uppercase">
-                            {gear.brand || "Brand"}
-                          </span>
-                        </div>
-                      </div>
-                    </td>
-
-                    {/* Window Dates Column Layout */}
-                    <td className="px-4 py-3 text-xs font-mono text-muted-foreground">
-                      <div className="text-foreground">
-                        {new Date(order.startDate).toLocaleDateString()}
-                      </div>
-                      <div className="text-[10px]">
-                        to {new Date(order.endDate).toLocaleDateString()}
-                      </div>
-                    </td>
-
-                    {/* Total Amount Due Column Layout */}
-                    <td className="px-4 py-3 font-mono text-sm text-foreground font-semibold">
-                      ${(order.totalAmount || 0).toFixed(2)}
-                    </td>
-
-                    {/* Operational Status Badging Column Layout */}
-                    <td className="px-4 py-3">
-                      <span
-                        className={`text-xs font-mono uppercase tracking-wider font-semibold ${
-                          order.status === "PAID" || order.status === "RETURNED"
-                            ? "text-green-500"
-                            : order.status === "CONFIRMED"
-                              ? "text-blue-500 font-bold"
-                              : order.status === "CANCELLED"
-                                ? "text-destructive"
-                                : "text-muted-foreground"
-                        }`}
+        {/* Tab 1: Rental Orders List */}
+        <TabsContent value="orders">
+          <div className="bg-card border border-border rounded-xl overflow-hidden shadow-sm">
+            {customerOrders.length === 0 ? (
+              <div className="text-center py-12 text-muted-foreground text-sm font-mono">
+                No historical bookings or rental orders logged yet.
+              </div>
+            ) : (
+              <Table>
+                <TableHeader>
+                  <TableRow className="bg-muted/20 hover:bg-muted/20">
+                    {[
+                      "Item Details",
+                      "Rental Window Dates",
+                      "Total Price",
+                      "Quantity",
+                      "Status",
+                      "Payment Options",
+                    ].map((h) => (
+                      <TableHead
+                        key={h}
+                        className="px-4 py-3 text-xs font-mono text-muted-foreground uppercase tracking-widest"
                       >
-                        {order.status.replace("_", " ")}
-                      </span>
-                    </td>
+                        {h}
+                      </TableHead>
+                    ))}
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {customerOrders.map((order) => (
+                    <OrderRow
+                      key={order.id}
+                      order={order}
+                      onPay={setSelectedOrder}
+                      onReview={setReviewOrder}
+                    />
+                  ))}
+                </TableBody>
+              </Table>
+            )}
+          </div>
+        </TabsContent>
 
-                    {/* Context Action Interception Trigger Column Layout */}
-                    <td className="px-4 py-3">
-                      {isPayable ? (
-                        <button
-                          onClick={() => setSelectedOrder(order)}
-                          className="flex items-center gap-1.5 px-3 py-1.5 bg-primary text-primary-foreground text-xs font-mono font-bold uppercase tracking-widest rounded-lg hover:bg-primary/90 transition-colors shadow-sm animate-pulse"
-                        >
-                          <CreditCard size={12} /> Pay Now
-                        </button>
-                      ) : isReturnable ? (
-                        <button
-                          onClick={() => setSelectedOrder(order)}
-                          className="flex items-center gap-1.5 px-3 py-1.5 bg-primary text-primary-foreground text-xs font-mono font-bold uppercase tracking-widest rounded-lg hover:bg-primary/90 transition-colors shadow-sm"
-                        >
-                          <ArrowLeftRight size={12} /> Return Order
-                        </button>
-                      ) : (
-                        <span className="text-xs font-mono text-muted-foreground italic">
-                          No Action Needed
-                        </span>
-                      )}
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
-        )}
-      </div>
+        {/* Tab 2: Dedicated Payment History Ledger */}
+        <TabsContent value="payments">
+          <PaymentHistoryTable payments={paymentHistory} />
+        </TabsContent>
 
-      {/* Conditional Client Modal Pop-up Activation */}
+        {/* Tab 3: Reviewed Products Cards */}
+        <TabsContent value="reviews">
+          <ReviewedProductsGrid items={reviewedOrders} />
+        </TabsContent>
+      </Tabs>
+
+      {/* Checkout Handling */}
       {selectedOrder && (
         <CheckOutModal
           order={selectedOrder}
           onClose={() => setSelectedOrder(null)}
           onPaymentSuccess={handlePaymentRedirectSuccess}
         />
+      )}
+
+      {/* Review Dialog Form */}
+      {reviewOrder && (
+        <ReviewModal order={reviewOrder} onClose={() => setReviewOrder(null)} />
       )}
     </div>
   );

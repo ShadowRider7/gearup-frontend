@@ -17,12 +17,8 @@ export const getUser = async () => {
     headers: {
       cookie: `accessToken=${accessToken}`,
     },
-    cache: "force-cache",
-    next: {
-      revalidate: 60 * 60 * 24,
-      tags: ["my-profile"],
-    },
+    cache: "no-store",
   });
-  const result = res.json();
+  const result = await res.json();
   return result;
 };

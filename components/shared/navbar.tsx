@@ -20,9 +20,7 @@ import Link from "next/link";
 
 const NAV_ITEMS = [
   { label: "Home", href: "/" },
-  { label: "About", href: "#" },
   { label: "Browse gears", href: "/gears" },
-  { label: "Contact", href: "#" },
 ];
 
 const USER_MENU_ITEMS = [
@@ -33,7 +31,7 @@ const USER_MENU_ITEMS = [
 
 export function Navbar({ user }: NavbarProps) {
   const router = useRouter();
-
+  const userRole = user?.data?.userProfile?.role?.toLowerCase();
   const handleUserAction = async (action: string) => {
     if (action === "logout") {
       await logout();
@@ -58,7 +56,6 @@ export function Navbar({ user }: NavbarProps) {
             </Link>
           </div>
 
-          {/* Nav Items */}
           <div className="hidden md:flex items-center gap-8">
             {NAV_ITEMS.map((item) => (
               <Link
@@ -69,6 +66,15 @@ export function Navbar({ user }: NavbarProps) {
                 {item.label}
               </Link>
             ))}
+
+            {user?.success && userRole && (
+              <Link
+                href={`/dashboard/${userRole}`}
+                className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+              >
+                Dashboard
+              </Link>
+            )}
           </div>
 
           {user.success ? (

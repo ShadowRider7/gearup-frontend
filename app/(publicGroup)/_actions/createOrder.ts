@@ -2,6 +2,7 @@
 
 import { orderPayload } from "@/lib/type";
 import { isAccessTokenExist } from "@/service/refreshToken";
+import { revalidateTag } from "next/cache";
 
 export const createOrder = async (
   prevState: orderPayload,
@@ -24,6 +25,11 @@ export const createOrder = async (
     body: JSON.stringify(payload),
   });
 
-  const result = res.json();
+  const result = await res.json();
+  if (result.success) {
+    revalidateTag("customer-order", {
+      expire: 0,
+    });
+  }
   return result;
 };

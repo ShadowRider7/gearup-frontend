@@ -3,12 +3,13 @@
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import jwt, { JwtPayload } from "jsonwebtoken";
-import { loginState, registerState } from "@/lib/type";
+
 import { loginSchema, registerSchema } from "./schema";
+import { LoginState, RegisterState } from "@/lib/type";
 
 export const loginAction = async (
   redirectTo: string,
-  prevState: loginState,
+  prevState: LoginState,
   formData: FormData,
 ) => {
   const email = formData.get("email");
@@ -77,7 +78,7 @@ export const loginAction = async (
 
 export const registerAction = async (
   redirectTo: string,
-  prevState: registerState,
+  prevState: RegisterState,
   formData: FormData,
 ) => {
   const name = formData.get("name");

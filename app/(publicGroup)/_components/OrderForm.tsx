@@ -1,58 +1,39 @@
 "use client";
 
-import { useActionState, useState, useMemo } from "react";
+import { useActionState, useEffect, useState } from "react";
 import { X, Loader2 } from "lucide-react";
-
 import { OrderFormProps } from "@/lib/type";
 import { createOrder } from "../_actions/createOrder";
+import { toast } from "sonner";
 
 export default function OrderForm({ gearItem, user }: OrderFormProps) {
-  const [state, formAction, isPending] = useActionState(createOrder, {
-    success: false,
-    message: "",
-  });
+  const [state, formAction, isPending] = useActionState(createOrder, null);
 
-  // Track values tightly in a single state object to trigger UI recalculations dynamically
-  const [formValues, setFormValues] = useState({
-    startDate: "",
-    endDate: "",
-    quantity: 1,
-  });
+  // Keep simple separate states to drive the real-time pricing calculation view
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
+  const [quantity, setQuantity] = useState(1);
 
   const todayString = new Date().toISOString().split("T")[0];
 
-  // Handle generic input updates reactively
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setFormValues((prev) => ({
-      ...prev,
-      [name]: name === "quantity" ? Math.max(1, Number(value)) : value,
-    }));
-  };
-
-  // Compute total days and price automatically without tracking variables separately
-  const { days, total } = useMemo(() => {
-    if (!formValues.startDate || !formValues.endDate) {
-      return { days: 0, total: 0 };
+  // Side-effect notification block triggered on execution state return values
+  useEffect(() => {
+    if (!state) return;
+    if (state.success) {
+      toast.success(state.message || "Order placed successfully!");
+    } else {
+      toast.error(state.message || "Order processing failed.");
     }
+  }, [state]);
 
-    const start = new Date(formValues.startDate);
-    const end = new Date(formValues.endDate);
+  // Derived calculation variables computed dynamically during standard render passes
+  const start = new Date(startDate);
+  const end = new Date(endDate);
+  const diffTime = end.getTime() - start.getTime();
+  const days = Math.ceil(diffTime / (1000 * 3600 * 24));
 
-    // Calculate the absolute difference in milliseconds
-    const differenceInTime = end.getTime() - start.getTime();
-
-    // Convert time to total days
-    const computedDays = Math.ceil(differenceInTime / (1000 * 3600 * 24));
-
-    // Guard against negative days (e.g., if end date is chosen before start date)
-    if (computedDays <= 0) return { days: 0, total: 0 };
-
-    return {
-      days: computedDays,
-      total: computedDays * gearItem.pricePerDay * formValues.quantity,
-    };
-  }, [formValues, gearItem.pricePerDay]);
+  const isValidRange = days > 0 && startDate && endDate;
+  const total = isValidRange ? days * gearItem.pricePerDay * quantity : 0;
 
   return (
     <form action={formAction} className="space-y-4">
@@ -68,8 +49,8 @@ export default function OrderForm({ gearItem, user }: OrderFormProps) {
             name="startDate"
             required
             min={todayString}
-            value={formValues.startDate}
-            onChange={handleInputChange}
+            value={startDate}
+            onChange={(e) => setStartDate(e.target.value)}
             className="w-full px-3 py-2 bg-background border border-border rounded-lg text-sm text-foreground focus:outline-none focus:border-primary transition-colors"
           />
         </div>
@@ -81,9 +62,9 @@ export default function OrderForm({ gearItem, user }: OrderFormProps) {
             type="date"
             name="endDate"
             required
-            min={formValues.startDate || todayString} // Prevents picking an end date before the start date
-            value={formValues.endDate}
-            onChange={handleInputChange}
+            min={startDate || todayString}
+            value={endDate}
+            onChange={(e) => setEndDate(e.target.value)}
             className="w-full px-3 py-2 bg-background border border-border rounded-lg text-sm text-foreground focus:outline-none focus:border-primary transition-colors"
           />
         </div>
@@ -99,32 +80,23 @@ export default function OrderForm({ gearItem, user }: OrderFormProps) {
           required
           min={1}
           max={gearItem.stock || 10}
-          value={formValues.quantity}
-          onChange={handleInputChange}
+          value={quantity}
+          onChange={(e) => setQuantity(Math.max(1, Number(e.target.value)))}
           className="w-full px-3 py-2 bg-background border border-border rounded-lg text-sm text-foreground focus:outline-none focus:border-primary transition-colors"
-          onKeyDown={(e) => {
-            // Prevent decimal inputs
-            if (e.key === "." || e.key === ",") e.preventDefault();
-          }}
+          onKeyDown={(e) =>
+            ["-", "+", ".", ","].includes(e.key) && e.preventDefault()
+          }
         />
       </div>
 
-      {state?.message && (
-        <p
-          className={`text-xs font-mono ${state.success ? "text-green-400" : "text-red-400"}`}
-        >
-          {state.message}
-        </p>
-      )}
-
-      {/* Renders calculations automatically once valid dates are chosen */}
-      {days > 0 && (
+      {/* Renders summary element automatically when correct bounds match */}
+      {isValidRange && (
         <div className="flex justify-between items-center py-3 border-t border-border">
           <span className="text-sm font-mono text-muted-foreground inline-flex items-center gap-1.5">
             {days}d <X className="w-3 h-3 opacity-60" /> ${gearItem.pricePerDay}
-            {formValues.quantity > 1 && (
+            {quantity > 1 && (
               <>
-                <X className="w-3 h-3 opacity-60" /> Qty {formValues.quantity}
+                <X className="w-3 h-3 opacity-60" /> Qty {quantity}
               </>
             )}
           </span>

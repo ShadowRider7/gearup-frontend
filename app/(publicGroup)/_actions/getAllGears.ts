@@ -37,8 +37,10 @@ export const getGearList = async (query?: {
   const res = await fetch(
     `${process.env.BACKEND_API_URL}/api/gear?${params.toString()}`,
     {
-      cache: "no-store",
-      next: { tags: ["gear-items"] },
+      next: {
+        revalidate: 60,
+        tags: ["gear-items"],
+      },
     },
   );
 

@@ -1,16 +1,23 @@
 // app/customer/dashboard/page.tsx
 import React from "react";
 import { getUser } from "@/service/getUser";
-import { getCustomerOrderList } from "../../_actions/customerDashboardActions";
+import {
+  getCustomerOrderList,
+  getCustomerPaymentHistory,
+} from "../../_actions/customerDashboardActions";
 import { Activity, DollarSign, Package } from "lucide-react";
 import StatCard from "../../_components/StatCard";
-import { UserRentalOrders } from "@/lib/type";
+import { PaymentHistory, UserRentalOrders } from "@/lib/type";
 import CustomerDashboardClient from "../../_components/CustomerDashboardClient";
 
 export default async function Customer() {
   const user = await getUser();
   const responseOrders: UserRentalOrders = await getCustomerOrderList();
   const customerOrders = responseOrders?.data?.usersRentalOrders || [];
+  const paymentHistoryResponse: PaymentHistory =
+    await getCustomerPaymentHistory();
+  const paymentHistory = paymentHistoryResponse?.data || [];
+
   const firstName = user?.data?.userProfile?.name?.split(" ")[0] || "User";
 
   // Calculate lifetime dynamic spending from completed orders safely
@@ -69,7 +76,10 @@ export default async function Customer() {
         </div>
 
         {/* Client Interactive Table Layer orchestration gateway */}
-        <CustomerDashboardClient customerOrders={customerOrders} />
+        <CustomerDashboardClient
+          paymentHistory={paymentHistory}
+          customerOrders={customerOrders}
+        />
       </div>
     </div>
   );

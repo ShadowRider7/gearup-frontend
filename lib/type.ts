@@ -124,14 +124,7 @@ export type UserRentalOrders = {
     >;
   };
 };
-// {
-//     "success": true,
-//     "statusCode": 200,
-//     "message": "payment link fetched.",
-//     "data": {
-//         "paymentUrl": "https://checkout.stripe.com/c/pay/cs_test_a1SnYVWvx2d53YkMv3ZUF55ZBbdgJdLMkcP1sqVFm6o4rfW2eLf0modNmG#fidnandhYHdWcXxpYCc%2FJ2FgY2RwaXEnKSdicGRmZGhqaWBTZHdsZGtxJz8nZmprcXdqaScpJ2R1bE5gfCc%2FJ3VuWnFgdnFaMDRRak99TjRSS11XaWhNT1x2a2RVckhKYDNBN1ZANUpWT0tLSn9OZmA2ZkpBRGhIa1x3bkZuSFBwNEZPQUZ8UmFuMDVSYn80dHQ2NjNTdktQYVVEVzBOcE01NWY2UWlXN0FRJyknY3dqaFZgd3Ngdyc%2FcXdwYCknZ2RmbmJ3anBrYUZqaWp3Jz8nJmNjY2NjYycpJ2lkfGpwcVF8dWAnPyd2bGtiaWBabHFgaCcpJ2BrZGdpYFVpZGZgbWppYWB3dic%2FcXdwYHgl"
-//     }
-// }
+
 export type PaymentResponse = {
   success: boolean;
   statusCode: number;
@@ -235,6 +228,7 @@ export type PaymentHistory = {
     paidAt: string;
     createdAt: string;
     updatedAt: string;
+    rentalOrder: RentalOrder["data"]["rentalOrder"];
   }>;
 };
 
@@ -263,3 +257,27 @@ export type RentalStatus =
   | "PICKED_UP"
   | "RETURNED"
   | "CANCELLED";
+
+export type reviewPayload = {
+  rentalOrderId: string;
+  rating: number;
+  comment: string;
+};
+
+export type ReviewState = {
+  success: boolean;
+  statusCode: number;
+  message: string;
+  data: {
+    review: {
+      id: string;
+      customerId: string;
+      gearItemId: string;
+      rentalOrderId: string;
+      rating: number;
+      comment: string;
+      createdAt: string;
+      updatedAt: string;
+    };
+  };
+};
