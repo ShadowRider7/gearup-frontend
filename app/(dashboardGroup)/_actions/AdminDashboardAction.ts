@@ -24,7 +24,7 @@ export const updateUserStatus = async (userId: string, status: UserStatus) => {
   const accessToken = await isAccessTokenExist();
 
   const res = await fetch(
-    `${process.env.BACKEND_API_URL}/api/admin/users${userId}`,
+    `${process.env.BACKEND_API_URL}/api/admin/users/${userId}`,
     {
       method: "PATCH",
       headers: {

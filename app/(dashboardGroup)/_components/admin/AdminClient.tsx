@@ -1,26 +1,26 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useTransition } from "react";
 import { LoadingSkeleton } from "./LoadingSkeleton";
 import {
   AdminTabtype,
+  AllGears,
   AllOrders,
   AllUsers,
-  GearItems,
-  IUser,
   UserStatus,
 } from "@/lib/type";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { OverviewTab } from "./OverviewTab";
 
 import { toast } from "sonner";
 import { updateUserStatus } from "../../_actions/AdminDashboardAction";
 import OrdersTab from "./OrdersTab";
 import GearTab from "./GearTab";
 import UsersTab from "./UsersTab";
+import OverviewTab from "./OverviewTab";
+import { useRouter } from "next/navigation";
 
 interface AdminPageProps {
   Users: AllUsers;
-  Gear: GearItems;
+  Gear: AllGears;
   Orders: AllOrders;
 }
 
@@ -28,27 +28,24 @@ const AdminClient = ({ Users, Gear, Orders }: AdminPageProps) => {
   const [tab, setTab] = useState<AdminTabtype>("overview");
   const [loading, setLoading] = useState(true);
 
-  const allUsers = Users.data.users || [];
-  const allGear = Gear.data.gearItemsList.data || [];
-  const allOrders = Orders.data.allOrders || [];
+  const allUsers = Users?.data?.allUsers || [];
+  const allGear = Gear?.data?.gearItemsList || [];
+  const allOrders = Orders?.data?.allOrders || [];
 
   useEffect(() => {
     const t = setTimeout(() => setLoading(false), 700);
     return () => clearTimeout(t);
   }, []);
 
+  const router = useRouter();
+  const [isPending, startTransition] = useTransition();
+
   const handleUserToggle = async (userId: string) => {
-    const user = allUsers.find(
-      (u: IUser["data"]["userProfile"]) => u.id === userId,
-    );
+    const user = allUsers.find((u) => u.id === userId);
     if (!user) return;
 
-    // 1. Compare using pure strings since user.status is a 'string' type
-    // Replace the string comparison from Option A with this uppercase check line:
-    const isCurrentlyActive = user.status === "ACTIVE";
-
-    // 2. Set the next status enum type safely based on the string evaluation
-    const nextStatus: UserStatus = isCurrentlyActive
+    const isCurrentlyActive = user.status.toUpperCase() === "ACTIVE";
+    const nextStatus = isCurrentlyActive
       ? UserStatus.SUSPENDED
       : UserStatus.ACTIVE;
 
@@ -56,17 +53,17 @@ const AdminClient = ({ Users, Gear, Orders }: AdminPageProps) => {
       const res = await updateUserStatus(userId, nextStatus);
 
       if (res.success) {
-        toast.success(
-          nextStatus === UserStatus.ACTIVE
-            ? `${user.name} has been re-activated successfully.`
-            : `${user.name} has been suspended.`,
-        );
+        toast.success("Status updated!");
+
+        // Forces Next.js to re-fetch Server Components and update client props instantly
+        startTransition(() => {
+          router.refresh();
+        });
       } else {
-        toast.error(res.message || "Failed to update user profile parameters.");
+        toast.error(res.message || "Failed to update user.");
       }
     } catch (error) {
-      console.error(error);
-      toast.error("An unexpected validation or network error occurred.");
+      toast.error("Error connecting to server.");
     }
   };
 
@@ -105,7 +102,11 @@ const AdminClient = ({ Users, Gear, Orders }: AdminPageProps) => {
         </TabsContent>
 
         <TabsContent value="users" className="mt-0">
-          <UsersTab allUsers={allUsers} handleUserToggle={handleUserToggle} />
+          <UsersTab
+            isPending={isPending}
+            allUsers={allUsers}
+            handleUserToggle={handleUserToggle}
+          />
         </TabsContent>
 
         <TabsContent value="gear" className="mt-0">

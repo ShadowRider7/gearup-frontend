@@ -32,16 +32,22 @@ export default function OrdersTab({ allOrders = [] }: OrdersTabProps) {
         <Table className="w-full">
           <TableHeader>
             <TableRow className="border-b border-border bg-muted/20 hover:bg-muted/20">
-              {["Order ID", "Item", "Customer", "Dates", "Total", "Status"].map(
-                (h) => (
-                  <TableHead
-                    key={h}
-                    className="text-left px-4 py-3 text-xs font-mono text-muted-foreground uppercase tracking-widest"
-                  >
-                    {h}
-                  </TableHead>
-                ),
-              )}
+              {[
+                "Order ID",
+                "Item",
+                "Customer",
+                "Dates",
+                "Total",
+                "Quantity",
+                "Status",
+              ].map((h) => (
+                <TableHead
+                  key={h}
+                  className="text-left px-4 py-3 text-xs font-mono text-muted-foreground uppercase tracking-widest"
+                >
+                  {h}
+                </TableHead>
+              ))}
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -60,8 +66,19 @@ export default function OrdersTab({ allOrders = [] }: OrdersTabProps) {
                   {o.customer.name}
                 </TableCell>
                 <TableCell className="px-4 py-3 text-xs font-mono text-muted-foreground whitespace-nowrap">
-                  {o.startDate} → {o.endDate}
+                  {new Date(o.startDate).toLocaleDateString("en-US", {
+                    month: "short",
+                    day: "numeric",
+                    year: "numeric",
+                  })}{" "}
+                  →{" "}
+                  {new Date(o.endDate).toLocaleDateString("en-US", {
+                    month: "short",
+                    day: "numeric",
+                    year: "numeric",
+                  })}
                 </TableCell>
+
                 <TableCell className="px-4 py-3 font-mono text-sm text-foreground">
                   ${o.totalAmount}
                 </TableCell>

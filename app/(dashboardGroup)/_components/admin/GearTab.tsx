@@ -11,17 +11,16 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { GearItems } from "@/lib/type";
+import { AllGears } from "@/lib/type";
 import { AdminPagination } from "./AdminPagination";
 
 const PAGE_SIZE = 5;
 
 interface GearTabProps {
-  allGear: GearItems["data"]["gearItemsList"]["data"];
+  allGear: AllGears["data"]["gearItemsList"];
 }
 
-export default function GearTab({ allGear = [] }: GearTabProps) {
-  console.log("Raw Gear Payload Data Object:", allGear);
+export default function GearTab({ allGear }: GearTabProps) {
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
 

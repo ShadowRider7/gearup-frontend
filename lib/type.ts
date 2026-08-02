@@ -36,69 +36,70 @@ export type AllUsers = {
   statusCode: number;
   message: string;
   data: {
-    users: Array<{
-      id: string;
-      name: string;
-      email: string;
-      role: string;
-      status: string;
-      createdAt: string;
-      updatedAt: string;
-      profile: {
+    allUsers: [
+      {
         id: string;
-        profilePhoto: string;
-        phone: string;
-        address: string;
-        bio: string;
-        userId: string;
-        createdAt: string;
-        updatedAt: string;
-      };
-      rentals: Array<{
-        id: string;
-        customerId: string;
-        gearItemId: string;
-        startDate: string;
-        endDate: string;
-        quantity: number;
-        totalAmount: number;
+        name: string;
+        email: string;
+        role: string;
         status: string;
         createdAt: string;
         updatedAt: string;
-      }>;
-      reviews: Array<{
-        id: string;
-        customerId: string;
-        gearItemId: string;
-        rentalOrderId: string;
-        rating: number;
-        comment: string;
-        createdAt: string;
-        updatedAt: string;
-      }>;
-      gearItems: Array<{
-        id: string;
-        providerId: string;
-        categoryId: string;
-        name: string;
-        description: string;
-        brand: string;
-        pricePerDay: number;
-        stock: number;
-        images: string[];
-        specifications: Record<string, string | boolean | number>;
-        isAvailable: boolean;
-        createdAt: string;
-        updatedAt: string;
-        category: Category;
-        provider: Provider;
-        reviews: Review[];
-        _count: {
-          rentals: number;
-          reviews: number;
+        profile: {
+          id: string;
+          profilePhoto: string;
+          phone: string;
+          address: string;
+          bio: string;
+          userId: string;
+          createdAt: string;
+          updatedAt: string;
         };
-      }>;
-    }>;
+        rentals: [
+          {
+            id: string;
+            customerId: string;
+            gearItemId: string;
+            startDate: string;
+            endDate: string;
+            quantity: number;
+            totalAmount: number;
+            status: string;
+            createdAt: string;
+            updatedAt: string;
+          },
+        ];
+        reviews: [
+          {
+            id: string;
+            customerId: string;
+            gearItemId: string;
+            rentalOrderId: string;
+            rating: number;
+            comment: string;
+            createdAt: string;
+            updatedAt: string;
+          },
+        ];
+        gearItems: [
+          {
+            id: string;
+            providerId: string;
+            categoryId: string;
+            name: string;
+            description: string;
+            brand: string;
+            pricePerDay: number;
+            stock: number;
+            images: string[];
+            specifications: Record<string, string | boolean | number>;
+            isAvailable: boolean;
+            createdAt: string;
+            updatedAt: string;
+          },
+        ];
+      },
+    ];
   };
 };
 
@@ -246,6 +247,46 @@ export type Gear = {
   };
   averageRating: number;
 };
+export type AllGears = {
+  success: boolean;
+  statusCode: number;
+  message: string;
+  data: {
+    gearItemsList: [
+      {
+        id: string;
+        providerId: string;
+        categoryId: string;
+        name: string;
+        description: string;
+        brand: string;
+        pricePerDay: number;
+        stock: number;
+        images: string[];
+        specifications: Record<string, string | boolean | number>;
+        isAvailable: boolean;
+        createdAt: string;
+        updatedAt: string;
+        category: {
+          id: string;
+          name: string;
+          description: string;
+          createdAt: string;
+          updatedAt: string;
+        };
+        provider: {
+          id: string;
+          name: string;
+          email: string;
+          role: string;
+          status: string;
+          createdAt: string;
+          updatedAt: string;
+        };
+      },
+    ];
+  };
+};
 
 export type GearItems = {
   success: boolean;
@@ -372,9 +413,10 @@ export type RentalStatus =
   | "CANCELLED";
 
 export enum UserStatus {
-  ACTIVE,
-  SUSPENDED,
+  ACTIVE = "ACTIVE",
+  SUSPENDED = "SUSPENDED",
 }
+
 export type AdminTabtype = "overview" | "users" | "gear" | "orders";
 
 export type reviewPayload = {

@@ -123,7 +123,23 @@ export function GearDetailsClient({ gearItem, user }: OrderFormProps) {
               </div>
 
               {gearItem.isAvailable ? (
-                <OrderForm user={user} gearItem={gearItem}></OrderForm>
+                user?.data?.userProfile?.role === "customer" ? (
+                  <OrderForm user={user} gearItem={gearItem} />
+                ) : (
+                  <div className="text-center py-8 bg-muted/10 border border-dashed border-border rounded-xl">
+                    <AlertCircle
+                      size={30}
+                      className="text-muted-foreground mx-auto mb-3"
+                    />
+                    <p className="text-sm font-mono text-muted-foreground font-semibold">
+                      Ordering Disabled
+                    </p>
+                    <p className="text-xs font-mono text-muted-foreground mt-1 max-w-[250px] mx-auto">
+                      Only customer accounts can place orders. Providers cannot
+                      purchase gear.
+                    </p>
+                  </div>
+                )
               ) : (
                 <div className="text-center py-8">
                   <AlertCircle

@@ -12,24 +12,27 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { toast } from "sonner";
 import { AllUsers } from "@/lib/type";
 import { AdminPagination } from "./AdminPagination";
 
 const PAGE_SIZE = 4;
 
 interface UsersTabProps {
-  allUsers: AllUsers["data"]["users"];
+  allUsers: AllUsers["data"]["allUsers"];
   handleUserToggle: (id: string) => void;
+  isPending: boolean;
 }
 
 export default function UsersTab({
   allUsers,
   handleUserToggle,
+  isPending,
 }: UsersTabProps) {
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
+
   console.log("Raw Users Payload Data Object:", allUsers);
+
   const filteredUsers = allUsers.filter(
     (u) =>
       u.name.toLowerCase().includes(search.toLowerCase()) ||
@@ -77,49 +80,55 @@ export default function UsersTab({
             </TableRow>
           </TableHeader>
           <TableBody>
-            {pagedUsers.map((u) => (
-              <TableRow
-                key={u.id}
-                className="hover:bg-muted/10 transition-colors"
-              >
-                <TableCell className="px-4 py-3 text-sm font-medium text-foreground">
-                  {u.name}
-                </TableCell>
-                <TableCell className="px-4 py-3 text-xs font-mono text-muted-foreground">
-                  {u.email}
-                </TableCell>
-                <TableCell className="px-4 py-3 text-xs font-mono text-muted-foreground uppercase tracking-wide">
-                  {u.role}
-                </TableCell>
-                <TableCell className="px-4 py-3 text-xs font-mono text-muted-foreground">
-                  {u.createdAt}
-                </TableCell>
-                <TableCell className="px-4 py-3">
-                  <span
-                    className={`text-xs font-mono uppercase tracking-wide font-semibold ${u.status === "active" ? "text-emerald-500" : "text-destructive"}`}
-                  >
-                    {u.status === "active" ? "● Active" : "○ Suspended"}
-                  </span>
-                </TableCell>
-                <TableCell className="px-4 py-3">
-                  <Button
-                    variant="link"
-                    size="sm"
-                    onClick={() => {
-                      handleUserToggle(u.id);
-                      toast.success(
-                        u.status === "active"
-                          ? `${u.name} suspended.`
-                          : `${u.name} activated.`,
-                      );
-                    }}
-                    className={`h-auto p-0 text-xs font-mono uppercase tracking-wide font-bold ${u.status === "active" ? "text-destructive" : "text-emerald-500"}`}
-                  >
-                    {u.status === "active" ? "Suspend" : "Activate"}
-                  </Button>
-                </TableCell>
-              </TableRow>
-            ))}
+            {pagedUsers.map((u) => {
+              // Normalize status checking cleanly here
+              const isActive = u.status.toUpperCase() === "ACTIVE";
+
+              return (
+                <TableRow
+                  key={u.id}
+                  className="hover:bg-muted/10 transition-colors"
+                >
+                  <TableCell className="px-4 py-3 text-sm font-medium text-foreground">
+                    {u.name}
+                  </TableCell>
+                  <TableCell className="px-4 py-3 text-xs font-mono text-muted-foreground">
+                    {u.email}
+                  </TableCell>
+                  <TableCell className="px-4 py-3 text-xs font-mono text-muted-foreground uppercase tracking-wide">
+                    {u.role}
+                  </TableCell>
+                  <TableCell className="px-4 py-3 text-xs font-mono text-muted-foreground">
+                    {u.createdAt}
+                  </TableCell>
+                  <TableCell className="px-4 py-3">
+                    <span
+                      className={`text-xs font-mono uppercase tracking-wide font-semibold ${
+                        isActive ? "text-emerald-500" : "text-destructive"
+                      }`}
+                    >
+                      {isActive ? "● Active" : "○ Suspended"}
+                    </span>
+                  </TableCell>
+                  <TableCell className="px-4 py-3">
+                    <Button
+                      variant="link"
+                      size="sm"
+                      onClick={() => handleUserToggle(u.id)}
+                      className={`h-auto p-0 text-xs font-mono uppercase tracking-wide font-bold ${
+                        isActive ? "text-destructive" : "text-emerald-500"
+                      }`}
+                    >
+                      {isPending
+                        ? "Updating..."
+                        : isActive
+                          ? "Suspend"
+                          : "Activate"}
+                    </Button>
+                  </TableCell>
+                </TableRow>
+              );
+            })}
           </TableBody>
         </Table>
       </div>

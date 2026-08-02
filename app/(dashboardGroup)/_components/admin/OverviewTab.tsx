@@ -4,7 +4,7 @@ import React from "react";
 import { Users, Package, ShoppingBag, TrendingUp } from "lucide-react";
 import StatCard from "../StatCard";
 import StatusBadge from "../StatusBadge";
-import { AllOrders, AllUsers, GearItems } from "@/lib/type";
+import { AllGears, AllOrders, AllUsers, GearItems } from "@/lib/type";
 type Role = "CUSTOMER" | "PROVIDER";
 const STATUS_CFG: Record<string, { color: string }> = {
   PENDING: { color: "#f59e0b" }, // Amber
@@ -15,17 +15,16 @@ const STATUS_CFG: Record<string, { color: string }> = {
   CANCELLED: { color: "#ef4444" }, // Red
 };
 interface OverviewTabProps {
-  allUsers: AllUsers["data"]["users"];
+  allUsers: AllUsers["data"]["allUsers"];
   allOrders: AllOrders["data"]["allOrders"];
-  allGear: GearItems["data"]["gearItemsList"]["data"];
+  allGear: AllGears["data"]["gearItemsList"];
 }
 
-export function OverviewTab({
+export default function OverviewTab({
   allUsers,
   allOrders,
   allGear,
 }: OverviewTabProps) {
-  console.log(allUsers, allGear, allOrders, "paisi");
   const revenue = allOrders
     .filter((o) => ["PAID", "PICKED_UP", "RETURNED"].includes(o.status))
     .reduce((s, o) => s + o.totalAmount, 0);
