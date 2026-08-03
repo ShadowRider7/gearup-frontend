@@ -3,10 +3,10 @@
 
 import React, { useTransition } from "react";
 import { Package, Activity, Clock, Bell } from "lucide-react";
-import StatCard from "../_components/StatCard";
+import StatCard from "../StatCard";
 
 import { ProviderRentalOrders, RentalStatus } from "@/lib/type";
-import { updateOrderStatus } from "../_actions/providerDashboardActions";
+import { updateOrderStatus } from "../../_actions/providerDashboardActions";
 
 interface OverviewTabProps {
   gearCount: number;

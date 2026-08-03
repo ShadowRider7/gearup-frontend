@@ -2,12 +2,13 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import Link from "next/link";
 import { getCategoryList } from "./_actions/getAllCategory";
-import { Category, GearItems } from "@/lib/type";
+import { Category, categoryResponse, GearItems } from "@/lib/type";
 import { getGearList } from "./_actions/getAllGears";
 import { GearCard } from "./_components/GearCard";
 
 export default async function HomePage() {
-  const category: Category[] = await getCategoryList();
+  const categoryResponse: categoryResponse = await getCategoryList();
+  const category = categoryResponse.data.categoryList || [];
 
   const popularCategory = category.filter((cat) => cat.gearItems.length >= 1);
 

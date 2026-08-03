@@ -166,6 +166,14 @@ export type CategoryState = {
     };
   };
 };
+export type categoryResponse = {
+  success: boolean;
+  statusCode: number;
+  message: string;
+  data: {
+    categoryList: Category[];
+  };
+};
 export type Category = {
   id: string;
   name: string;
@@ -192,7 +200,7 @@ export type Category = {
 };
 
 export interface OrderFormProps {
-  gearItem: Gear;
+  gearItem: GearDetailsResponse["data"]["gearItemDetails"];
   user: IUser;
 }
 export type UserRentalOrders = {
@@ -456,6 +464,63 @@ export type ReviewState = {
       comment: string;
       createdAt: string;
       updatedAt: string;
+    };
+  };
+};
+export type GearDetailsResponse = {
+  success: boolean;
+  statusCode: number;
+  message: string;
+  data: {
+    gearItemDetails: {
+      id: string;
+      providerId: string;
+      categoryId: string;
+      name: string;
+      description: string;
+      brand: string;
+      pricePerDay: number;
+      stock: number;
+      images: string[];
+      specifications: Record<string, string | boolean | number>;
+      isAvailable: boolean;
+      createdAt: string;
+      updatedAt: string;
+      category: {
+        id: string;
+        name: string;
+        description: string;
+        createdAt: string;
+        updatedAt: string;
+      };
+      reviews: [
+        {
+          id: string;
+          customerId: string;
+          gearItemId: string;
+          rentalOrderId: string;
+          rating: number;
+          comment: string;
+          createdAt: string;
+          updatedAt: string;
+        },
+      ];
+
+      provider: {
+        id: string;
+        name: string;
+        email: string;
+        role: string;
+        status: string;
+        createdAt: string;
+        updatedAt: string;
+      };
+      averageRating: number;
+
+      _count: {
+        rentals: number;
+        reviews: number;
+      };
     };
   };
 };

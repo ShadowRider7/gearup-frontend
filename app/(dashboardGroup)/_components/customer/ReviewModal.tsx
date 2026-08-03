@@ -14,7 +14,7 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Star, Loader2 } from "lucide-react";
 import { SingleOrder } from "./CustomerDashboardClient";
-import { createReview } from "../_actions/customerDashboardActions";
+import { createReview } from "../../_actions/customerDashboardActions";
 import { toast } from "sonner";
 
 interface ReviewModalProps {

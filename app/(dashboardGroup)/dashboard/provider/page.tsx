@@ -1,20 +1,35 @@
 import { getUser } from "@/service/getUser";
-import { GearItems, IUser, ProviderRentalOrders } from "@/lib/type";
+import {
+  Category,
+  categoryResponse,
+  GearItems,
+  IUser,
+  ProviderRentalOrders,
+} from "@/lib/type";
 import {
   getProviderOrderList,
   providerGearItems,
 } from "../../_actions/providerDashboardActions";
-import ProviderDashboardClient from "../../_components/ProviderDashboardClient";
+import ProviderDashboardClient from "../../_components/provider/ProviderDashboardClient";
+import { getCategoryList } from "@/app/(publicGroup)/_actions/getAllCategory";
 
 export default async function ProviderPage() {
   const user: IUser = await getUser();
   const providerId = user?.data?.userProfile?.id;
 
-  const [ordersResponse, gearResponse]: [ProviderRentalOrders, GearItems] =
-    await Promise.all([getProviderOrderList(), providerGearItems(providerId)]);
+  const [ordersResponse, gearResponse, categoryResponse]: [
+    ProviderRentalOrders,
+    GearItems,
+    categoryResponse,
+  ] = await Promise.all([
+    getProviderOrderList(),
+    providerGearItems(providerId),
+    getCategoryList(),
+  ]);
 
   const orders = ordersResponse?.data?.orders || [];
   const gear = gearResponse?.data?.gearItemsList?.data || [];
+  const categories = categoryResponse?.data?.categoryList || [];
 
   return (
     <div className="min-h-screen bg-background">
@@ -28,7 +43,11 @@ export default async function ProviderPage() {
           </h1>
         </div>
 
-        <ProviderDashboardClient gear={gear} orders={orders} />
+        <ProviderDashboardClient
+          categories={categories}
+          gear={gear}
+          orders={orders}
+        />
       </div>
     </div>
   );

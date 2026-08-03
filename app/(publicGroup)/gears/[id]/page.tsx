@@ -2,16 +2,16 @@ import React from "react";
 
 import { getGearDetails } from "../../_actions/getGearDetails";
 import { GearDetailsClient } from "../../_components/gearDetailsClient";
-import { getUser } from "@/service/getUser";
+import { GearDetailsResponse } from "@/lib/type";
 
 const GearPage = async ({ params }: { params: Promise<{ id: string }> }) => {
   const { id } = await params;
-  const user = await getUser();
-  const gearItem = await getGearDetails(id);
+  const gearItem: GearDetailsResponse["data"]["gearItemDetails"] =
+    await getGearDetails(id);
 
   return (
     <div>
-      <GearDetailsClient gearItem={gearItem} user={user}></GearDetailsClient>
+      <GearDetailsClient gearItem={gearItem}></GearDetailsClient>
     </div>
   );
 };

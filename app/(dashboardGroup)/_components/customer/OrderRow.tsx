@@ -8,8 +8,9 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { ArrowLeftRight, CreditCard, Package, Star } from "lucide-react";
 import { SingleOrder } from "./CustomerDashboardClient";
-import { returnGear } from "../_actions/customerDashboardActions";
+import { returnGear } from "../../_actions/customerDashboardActions";
 import { toast } from "sonner";
+import Link from "next/link";
 
 interface OrderRowProps {
   order: SingleOrder;
@@ -51,31 +52,34 @@ export default function OrderRow({ order, onPay, onReview }: OrderRowProps) {
   return (
     <TableRow className="hover:bg-muted/10 transition-colors">
       <TableCell className="px-4 py-3">
-        <div className="flex items-center gap-3">
-          <Avatar className="w-10 h-8 rounded bg-muted flex-shrink-0 relative overflow-hidden">
-            {gear.images && gear.images[0] ? (
-              <Image
-                src={gear.images[0]}
-                alt={gear.name || "Gear"}
-                fill
-                sizes="40px"
-                className="object-cover"
-              />
-            ) : (
-              <AvatarFallback className="rounded bg-muted flex items-center justify-center w-full h-full">
-                <Package className="h-4 w-4 text-muted-foreground" />
-              </AvatarFallback>
-            )}
-          </Avatar>
-          <div>
-            <span className="text-sm text-foreground font-medium line-clamp-1 max-w-[180px]">
-              {gear.name || "Unknown Item"}
-            </span>
-            <span className="text-[10px] font-mono text-muted-foreground block uppercase">
-              {gear.brand || "Brand"}
-            </span>
+        <Link href={`/gears/${gear.id}`}>
+          {" "}
+          <div className="flex items-center gap-3">
+            <Avatar className="w-10 h-8 rounded bg-muted flex-shrink-0 relative overflow-hidden">
+              {gear.images && gear.images[0] ? (
+                <Image
+                  src={gear.images[0]}
+                  alt={gear.name || "Gear"}
+                  fill
+                  sizes="40px"
+                  className="object-cover"
+                />
+              ) : (
+                <AvatarFallback className="rounded bg-muted flex items-center justify-center w-full h-full">
+                  <Package className="h-4 w-4 text-muted-foreground" />
+                </AvatarFallback>
+              )}
+            </Avatar>
+            <div>
+              <span className="text-sm text-foreground font-medium line-clamp-1 max-w-[180px]">
+                {gear.name || "Unknown Item"}
+              </span>
+              <span className="text-[10px] font-mono text-muted-foreground block uppercase">
+                {gear.brand || "Brand"}
+              </span>
+            </div>
           </div>
-        </div>
+        </Link>
       </TableCell>
 
       <TableCell className="px-4 py-3 text-xs font-mono text-muted-foreground">

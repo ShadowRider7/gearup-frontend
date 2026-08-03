@@ -2,7 +2,7 @@
 
 import { useTransition } from "react";
 import { useRouter } from "next/navigation";
-import { updateOrderStatus } from "../_actions/providerDashboardActions";
+import { updateOrderStatus } from "../../_actions/providerDashboardActions";
 import { RentalStatus } from "@/lib/type";
 
 interface OrderStatusSelectProps {
@@ -19,8 +19,8 @@ export default function OrderStatusSelect({
 
   const allowedTransitions: Record<RentalStatus, RentalStatus[]> = {
     PLACED: ["CONFIRMED", "CANCELLED"],
-    CONFIRMED: ["PAYMENT_INITIATED", "CANCELLED"],
-    PAYMENT_INITIATED: ["PAID", "CONFIRMED", "CANCELLED"],
+    CONFIRMED: ["CANCELLED"],
+    PAYMENT_INITIATED: ["PAID", "CANCELLED"],
     PAID: ["PICKED_UP"],
     PICKED_UP: ["RETURNED"],
     RETURNED: [],
@@ -29,7 +29,6 @@ export default function OrderStatusSelect({
 
   const options = allowedTransitions[currentStatus] || [];
 
-  // Edge case handle: render completion badge if no forward states exist
   if (options.length === 0) {
     return (
       <div className="flex flex-col gap-1.5 w-full max-w-50">
@@ -50,7 +49,7 @@ export default function OrderStatusSelect({
       const response = await updateOrderStatus(orderId, orderStatus);
 
       if (response.success) {
-        router.refresh(); // Triggers server-side update for underlying page view data
+        router.refresh();
       } else {
         alert(`Error: ${response.error}`);
       }

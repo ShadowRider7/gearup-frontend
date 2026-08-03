@@ -8,7 +8,7 @@ import {
 import { Activity, DollarSign, Package } from "lucide-react";
 import StatCard from "../../_components/StatCard";
 import { PaymentHistory, UserRentalOrders } from "@/lib/type";
-import CustomerDashboardClient from "../../_components/CustomerDashboardClient";
+import CustomerDashboardClient from "../../_components/customer/CustomerDashboardClient";
 
 export default async function Customer() {
   const user = await getUser();

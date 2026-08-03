@@ -5,16 +5,18 @@ import React, { useState } from "react";
 
 import GearTab from "./GearTab";
 import OrdersTab from "./OrdersTab";
-import { Gear, ProviderRentalOrders } from "@/lib/type";
+import { Category, Gear, ProviderRentalOrders } from "@/lib/type";
 import TabBar from "./TabBar";
 import OverviewTab from "./OverViewTab";
 
 interface ProviderDashboardClientProps {
+  categories: Category[];
   gear: Gear[];
   orders: ProviderRentalOrders["data"]["orders"];
 }
 
 export default function ProviderDashboardClient({
+  categories,
   gear,
   orders,
 }: ProviderDashboardClientProps) {
@@ -32,7 +34,7 @@ export default function ProviderDashboardClient({
         {tab === "overview" && (
           <OverviewTab gearCount={gear.length} orders={orders} />
         )}
-        {tab === "gear" && <GearTab gear={gear} />}
+        {tab === "gear" && <GearTab categories={categories} gear={gear} />}
         {tab === "orders" && <OrdersTab orders={orders} />}
       </div>
     </div>

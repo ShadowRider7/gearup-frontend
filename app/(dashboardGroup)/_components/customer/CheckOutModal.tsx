@@ -3,7 +3,7 @@
 
 import React, { useState } from "react";
 import Image from "next/image";
-import { createPayment } from "../_actions/customerDashboardActions";
+import { createPayment } from "../../_actions/customerDashboardActions";
 import { RentalOrder } from "@/lib/type";
 
 interface ModalProps {

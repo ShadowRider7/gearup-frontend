@@ -1,71 +1,47 @@
-"use client";
-
-import React, { useState } from "react";
-import { useRouter } from "next/navigation";
-import { AlertCircle, ArrowLeft, MapPin, X } from "lucide-react";
+import React from "react";
+import { MapPin } from "lucide-react";
 import { Rating } from "./Rating";
-import { Gear, IUser, OrderFormProps } from "@/lib/type";
-import Image from "next/image";
+import { Gear, GearDetailsResponse, IUser, OrderFormProps } from "@/lib/type";
+import { getUser } from "@/service/getUser";
 import OrderForm from "./OrderForm";
 
-export function GearDetailsClient({ gearItem, user }: OrderFormProps) {
-  const router = useRouter();
-  const handleChange = (action: string) => {
-    if (action === "back") {
-      return router.push("/gears");
-    }
-  };
+import { ImageGallery } from "./ImageGallery";
+import BackButton from "./BackButton";
 
-  const [activeImg, setActiveImg] = useState(0);
+export async function GearDetailsClient(props: {
+  gearItem: GearDetailsResponse["data"]["gearItemDetails"];
+}) {
+  const user: IUser | null = await getUser();
+
+  const gearItem = props?.gearItem;
+
+  // 1. Safely extract user profile and role data
+  const userProfile = user?.data?.userProfile;
+  const userRole = userProfile?.role;
+
+  // 2. Explicitly determine if a valid user session exists
+  const isLoggedIn = !!userProfile && !!userProfile.id;
+
+  if (!gearItem) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-background">
+        <p className="text-sm font-mono text-muted-foreground">
+          Gear details missing.
+        </p>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background">
       <div className="max-w-6xl mx-auto px-4 py-10">
-        <button
-          onClick={() => handleChange("back")}
-          className="flex items-center gap-2 text-xs font-mono text-muted-foreground hover:text-foreground uppercase tracking-widest mb-10 transition-colors"
-        >
-          <ArrowLeft size={14} /> Back to Browse
-        </button>
+        {/* Uses browser history now */}
+        <BackButton />
 
         <div className="grid lg:grid-cols-[1fr_400px] gap-12">
           <div>
-            <div className="aspect-4/3 relative rounded-2xl overflow-hidden bg-muted mb-3">
-              <Image
-                src={gearItem.images[activeImg]}
-                alt={gearItem.name}
-                fill
-                sizes="(max-width: 1024px) 100vw, 60vw"
-                priority
-                className="object-cover"
-                unoptimized
-              />
-            </div>
-
-            {gearItem.images.length > 1 && (
-              <div className="flex gap-2">
-                {gearItem.images.map((img, i) => (
-                  <button
-                    key={i}
-                    onClick={() => setActiveImg(i)}
-                    className={`w-20 h-14 relative rounded-lg overflow-hidden border-2 transition-all ${
-                      i === activeImg
-                        ? "border-primary"
-                        : "border-border hover:border-border/60"
-                    }`}
-                  >
-                    <Image
-                      src={img}
-                      alt={`Gallery thumbnail ${i + 1}`}
-                      fill
-                      sizes="80px"
-                      className="object-cover"
-                      unoptimized
-                    />
-                  </button>
-                ))}
-              </div>
-            )}
+            {/* Interactive gallery state handled cleanly inside its own client shell */}
+            <ImageGallery images={gearItem.images} name={gearItem.name} />
 
             <div className="mt-6 grid grid-cols-2 gap-3">
               {Object.entries(gearItem.specifications).map(([k, v]) => {
@@ -123,34 +99,44 @@ export function GearDetailsClient({ gearItem, user }: OrderFormProps) {
               </div>
 
               {gearItem.isAvailable ? (
-                user?.data?.userProfile?.role === "customer" ? (
+                // Fix Step 1: Check your explicit logged-in boolean state first
+                !isLoggedIn ? (
+                  <div className="text-center py-8 bg-primary/5 border border-primary/10 rounded-xl p-6">
+                    <p className="text-sm font-mono text-foreground font-semibold">
+                      Please Login to Order
+                    </p>
+                    <p className="text-xs font-mono text-muted-foreground mt-1 mb-4">
+                      You must be signed in to reserve this gear.
+                    </p>
+                    <a
+                      href="/login"
+                      className="inline-block w-full bg-primary text-primary-foreground text-xs font-mono font-medium py-2 px-4 rounded-lg hover:bg-primary/90 transition-colors text-center"
+                    >
+                      Sign In
+                    </a>
+                  </div>
+                ) : userRole === "CUSTOMER" ? (
+                  // Fix Step 2: Clear access path directly allows customer orders
                   <OrderForm user={user} gearItem={gearItem} />
                 ) : (
-                  <div className="text-center py-8 bg-muted/10 border border-dashed border-border rounded-xl">
-                    <AlertCircle
-                      size={30}
-                      className="text-muted-foreground mx-auto mb-3"
-                    />
-                    <p className="text-sm font-mono text-muted-foreground font-semibold">
+                  // Fix Step 3: Falls back here only if user is logged in but is a provider/admin
+                  <div className="text-center py-8 bg-muted/10 border border-dashed border-border rounded-xl p-6">
+                    <p className="text-sm font-mono text-destructive font-semibold">
                       Ordering Disabled
                     </p>
-                    <p className="text-xs font-mono text-muted-foreground mt-1 max-w-[250px] mx-auto">
-                      Only customer accounts can place orders. Providers cannot
-                      purchase gear.
+                    <p className="text-xs font-mono text-muted-foreground mt-1 max-w-[220px] mx-auto">
+                      Only customer accounts can place orders. Your current role
+                      is:{" "}
+                      <span className="font-bold uppercase text-foreground">
+                        {userRole || "unknown"}
+                      </span>
                     </p>
                   </div>
                 )
               ) : (
                 <div className="text-center py-8">
-                  <AlertCircle
-                    size={30}
-                    className="text-muted-foreground mx-auto mb-3"
-                  />
                   <p className="text-sm font-mono text-muted-foreground">
                     Currently unavailable
-                  </p>
-                  <p className="text-xs font-mono text-muted-foreground mt-1">
-                    Check back soon or browse similar gear
                   </p>
                 </div>
               )}
