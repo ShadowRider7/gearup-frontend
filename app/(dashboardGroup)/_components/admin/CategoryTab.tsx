@@ -2,7 +2,7 @@
 
 import React from "react";
 import CategoryFormDialog from "./CategoryFormDialog";
-import { AllGears, Category, Gear } from "@/lib/type";
+import { AllGears, Category } from "@/lib/type";
 
 interface CategoryTabProps {
   allCategories: Category[];

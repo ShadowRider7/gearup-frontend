@@ -11,12 +11,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import {
-  LogOut,
-  Settings,
-  User as UserIcon,
-  LayoutDashboard,
-} from "lucide-react";
+import { LogOut, Settings, User as UserIcon } from "lucide-react";
 import { NavbarProps } from "@/lib/type";
 import { logout } from "@/service/logout";
 import { toast } from "sonner";
@@ -37,8 +32,6 @@ export function Navbar({ user }: NavbarProps) {
       await logout();
       toast.success("Logged out successfully!");
       router.push("/login");
-    } else if (action === "dashboard") {
-      router.push(`/dashboard/${userRole}`);
     } else {
       router.push(`/${action}`);
     }
@@ -64,6 +57,7 @@ export function Navbar({ user }: NavbarProps) {
             </Link>
           </div>
 
+          {/* Navigation Links */}
           <div className="hidden md:flex items-center gap-6">
             {NAV_ITEMS.map((item) => (
               <Link
@@ -74,6 +68,16 @@ export function Navbar({ user }: NavbarProps) {
                 {item.label}
               </Link>
             ))}
+
+            {/* Render Dashboard Link in Main Nav when User is Logged In */}
+            {user.success && userRole && (
+              <Link
+                href={`/dashboard/${userRole}`}
+                className="text-sm font-medium text-muted-foreground hover:text-green-700 transition-colors"
+              >
+                Dashboard
+              </Link>
+            )}
           </div>
 
           <div className="flex items-center gap-4">
@@ -121,14 +125,6 @@ export function Navbar({ user }: NavbarProps) {
                   </div>
 
                   <DropdownMenuSeparator className="my-1" />
-
-                  <DropdownMenuItem
-                    onClick={() => handleUserAction("dashboard")}
-                    className="cursor-pointer py-2 focus:bg-green-50 focus:text-green-700"
-                  >
-                    <LayoutDashboard className="mr-2 h-4 w-4 opacity-70" />
-                    <span className="text-sm font-medium">Dashboard</span>
-                  </DropdownMenuItem>
 
                   <DropdownMenuItem
                     onClick={() => handleUserAction("profile")}

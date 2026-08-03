@@ -149,7 +149,7 @@ export default function OrderRow({ order, onPay, onReview }: OrderRowProps) {
           )
         ) : (
           <span className="text-xs font-mono text-muted-foreground italic">
-            No Action Needed
+            Wait for Provider confirmation
           </span>
         )}
       </TableCell>

@@ -19,7 +19,7 @@ export default async function GearListingPage({ searchParams }: PageProps) {
   const categories = categoryResponse.data.categoryList || [];
 
   return (
-    <div className="container mx-auto py-10 px-4 space-y-6">
+    <div className="max-w-7xl mx-auto py-10 px-4 space-y-6">
       <h1 className="text-2xl font-bold mb-6">Explore Rental Gear</h1>
 
       <GearSearchBar

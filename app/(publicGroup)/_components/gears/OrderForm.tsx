@@ -18,7 +18,9 @@ export default function OrderForm({ gearItem, user }: OrderFormProps) {
   useEffect(() => {
     if (!state) return;
     if (state.success) {
-      toast.success(state.message || "Order placed successfully!");
+      toast.success(
+        "Order placed successfully! Wait for the Provider to confirm your booking.Check the dashboard later",
+      );
     } else {
       toast.error(state.message || "Order processing failed.");
     }

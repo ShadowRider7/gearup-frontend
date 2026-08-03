@@ -3,7 +3,9 @@
 import React from "react";
 import { Trash2, Package } from "lucide-react";
 import Image from "next/image";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { TableRow, TableCell } from "@/components/ui/table";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import { Category, Gear } from "@/lib/type";
 import GearFormDialog from "./GearFormDialog";
 
@@ -18,62 +20,73 @@ export default function GearTableRow({
   onDelete,
   categories,
 }: GearTableRowProps) {
+  const hasImage = item.images && item.images[0];
+  const isAvailable = (item.stock ?? 0) > 0;
+
   return (
-    <tr className="border-b border-border last:border-0 hover:bg-muted/10 transition-colors">
-      <td className="px-4 py-3">
+    <TableRow className="hover:bg-muted/20 transition-colors">
+      {/* Product Image and Name Identity Column */}
+      <TableCell className="py-3">
         <div className="flex items-center gap-3">
-          <Avatar className="w-10 h-8 rounded bg-muted shrink-0 relative overflow-hidden">
-            {item.images && item.images[0] ? (
+          <div className="w-10 h-8 rounded bg-muted shrink-0 relative overflow-hidden border border-border/40 flex items-center justify-center">
+            {hasImage ? (
               <Image
                 src={item.images[0]}
                 alt={item.name}
                 fill
                 sizes="40px"
                 className="object-cover"
-                priority={false}
+                unoptimized // Bypasses remotePatterns image loading restrictions permanently
               />
             ) : (
-              <AvatarFallback className="rounded bg-muted flex items-center justify-center w-full h-full">
-                <Package className="h-4 w-4 text-muted-foreground" />
-              </AvatarFallback>
+              <Package className="h-4 w-4 text-muted-foreground/60" />
             )}
-          </Avatar>
-          <span className="text-sm text-foreground font-medium line-clamp-1 max-w-[200px]">
+          </div>
+          <span className="text-sm font-medium tracking-tight truncate max-w-[200px]">
             {item.name}
           </span>
         </div>
-      </td>
+      </TableCell>
 
-      <td className="px-4 py-3 text-xs font-mono text-muted-foreground">
+      {/* Product Category Group Tracking Column */}
+      <TableCell className="py-3 text-xs font-mono text-muted-foreground">
         {item.category?.name || "General"}
-      </td>
+      </TableCell>
 
-      <td className="px-4 py-3 font-mono text-sm text-foreground">
+      {/* Pricing Matrix Numeric Cell */}
+      <TableCell className="py-3 text-sm font-semibold font-mono text-foreground">
         ${item.pricePerDay}
-      </td>
+      </TableCell>
 
-      <td className="px-4 py-3">
-        <span
-          className={`text-xs font-mono uppercase tracking-wide ${(item.stock ?? 0) > 0 ? "text-green-400" : "text-muted-foreground"}`}
+      {/* Inventory Status Pill Column */}
+      <TableCell className="py-3">
+        <Badge
+          variant={isAvailable ? "secondary" : "destructive"}
+          className={`rounded-full px-2.5 py-0.5 text-xs font-semibold tracking-wide border ${
+            isAvailable
+              ? "bg-emerald-50 text-emerald-700 border-emerald-200"
+              : "bg-red-50 text-red-700 border-red-200"
+          }`}
         >
-          {(item.stock ?? 0) > 0
-            ? `● Active (${item.stock})`
-            : "○ Out of Stock"}
-        </span>
-      </td>
+          {isAvailable ? `In Stock (${item.stock})` : "Out of Stock"}
+        </Badge>
+      </TableCell>
 
-      <td className="px-4 py-3">
-        <div className="flex items-center gap-3">
+      {/* Modification Settings Command Center Actions Panel */}
+      <TableCell className="py-3">
+        <div className="flex items-center gap-1">
           <GearFormDialog categories={categories} mode="edit" item={item} />
 
-          <button
+          <Button
+            size="icon"
+            variant="ghost"
             onClick={() => onDelete(item.id)}
-            className="text-destructive hover:opacity-70 transition-opacity"
+            className="h-8 w-8 text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors rounded-md"
           >
-            <Trash2 size={14} />
-          </button>
+            <Trash2 size={15} />
+          </Button>
         </div>
-      </td>
-    </tr>
+      </TableCell>
+    </TableRow>
   );
 }

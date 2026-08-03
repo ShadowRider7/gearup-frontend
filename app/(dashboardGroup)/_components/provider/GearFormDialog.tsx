@@ -44,39 +44,61 @@ export default function GearFormDialog({
     if (!state) return;
     if (state.success !== false) {
       toast.success(
-        state.message || (mode === "edit" ? "Gear updated" : "Gear listed"),
+        state.message ||
+          (mode === "edit"
+            ? "Gear updated successfully"
+            : "Gear listed successfully"),
       );
       setOpen(false);
     } else {
-      toast.error(state.message || state.error || "Something went wrong");
+      toast.error(
+        state.message || state.error || "An unexpected error occurred",
+      );
     }
   }, [state, mode]);
+
+  const getSpecsString = () => {
+    if (!item?.specifications) return "";
+    if (typeof item.specifications === "string") return item.specifications;
+    try {
+      const str = JSON.stringify(item.specifications);
+      return str === "{}" ? "" : str;
+    } catch {
+      return "";
+    }
+  };
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         {mode === "edit" ? (
-          <button className="text-muted-foreground hover:text-foreground transition-colors">
-            <Edit3 size={14} />
-          </button>
+          <Button
+            variant="ghost"
+            size="icon"
+            className="h-8 w-8 text-muted-foreground hover:text-foreground rounded-md"
+          >
+            <Edit3 size={15} />
+          </Button>
         ) : (
           <Button
             size="sm"
-            className="flex items-center gap-2 font-mono uppercase text-xs"
+            className="flex items-center gap-2 font-mono uppercase text-xs bg-green-700 hover:bg-green-800 text-white"
           >
             <Plus size={14} /> List Gear
           </Button>
         )}
       </DialogTrigger>
 
-      <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto">
-        <DialogHeader>
-          <DialogTitle className="font-mono uppercase text-sm">
-            {mode === "edit" ? `Edit: ${item?.name}` : "List New Gear Item"}
+      <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto border-border/80 shadow-lg">
+        <DialogHeader className="border-b pb-3 mb-2">
+          <DialogTitle className="font-mono uppercase text-xs tracking-wider text-muted-foreground">
+            {mode === "edit"
+              ? `Edit Configuration: ${item?.name}`
+              : "Publish New Gear Listing"}
           </DialogTitle>
         </DialogHeader>
 
-        <form action={formAction} key={item?.id} className="space-y-4">
+        <form action={formAction} className="space-y-4 pt-2">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <CategorySelect
               categories={categories}
@@ -90,7 +112,14 @@ export default function GearFormDialog({
               >
                 Item Name
               </Label>
-              <Input id="name" name="name" defaultValue={item?.name} required />
+              <Input
+                id="name"
+                name="name"
+                key={`name-${item?.id}`}
+                defaultValue={item?.name}
+                required
+                className="focus-visible:ring-green-700"
+              />
             </div>
 
             <div className="space-y-1">
@@ -103,8 +132,10 @@ export default function GearFormDialog({
               <Input
                 id="brand"
                 name="brand"
+                key={`brand-${item?.id}`}
                 defaultValue={item?.brand}
                 required
+                className="focus-visible:ring-green-700"
               />
             </div>
 
@@ -118,9 +149,10 @@ export default function GearFormDialog({
               <Textarea
                 id="description"
                 name="description"
+                key={`desc-${item?.id}`}
                 defaultValue={item?.description}
                 required
-                className="min-h-20"
+                className="min-h-20 focus-visible:ring-green-700"
               />
             </div>
 
@@ -137,8 +169,10 @@ export default function GearFormDialog({
                 type="number"
                 min="0"
                 step="0.01"
+                key={`price-${item?.id}`}
                 defaultValue={item?.pricePerDay}
                 required
+                className="focus-visible:ring-green-700"
               />
             </div>
 
@@ -154,8 +188,10 @@ export default function GearFormDialog({
                 name="stock"
                 type="number"
                 min="0"
+                key={`stock-${item?.id}`}
                 defaultValue={item?.stock ?? 1}
                 required
+                className="focus-visible:ring-green-700"
               />
             </div>
 
@@ -169,9 +205,11 @@ export default function GearFormDialog({
               <Input
                 id="images"
                 name="images"
-                placeholder="img1.jpg, img2.jpg"
+                placeholder="https://example.com, https://example.com"
+                key={`images-${item?.id}`}
                 defaultValue={item?.images?.join(",")}
                 required
+                className="focus-visible:ring-green-700"
               />
             </div>
 
@@ -186,21 +224,22 @@ export default function GearFormDialog({
                 id="specifications"
                 name="specifications"
                 placeholder='{"Color": "Black", "Weight": "2kg"}'
-                defaultValue={JSON.stringify(item?.specifications || {})}
+                key={`specs-${item?.id}`}
+                defaultValue={getSpecsString()}
                 required
-                className="min-h-20 font-mono text-xs"
+                className="min-h-20 font-mono text-xs focus-visible:ring-green-700"
               />
             </div>
           </div>
 
-          <DialogFooter className="pt-2">
+          <DialogFooter className="pt-4 border-t mt-2">
             <Button
               type="submit"
               disabled={pending}
-              className="w-full md:w-auto font-mono uppercase text-xs"
+              className="w-full md:w-auto font-mono uppercase text-xs bg-green-700 hover:bg-green-800 text-white"
             >
               {pending
-                ? "Saving..."
+                ? "Saving Entry..."
                 : mode === "edit"
                   ? "Save Changes"
                   : "Publish Listing"}
