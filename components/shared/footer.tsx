@@ -1,68 +1,71 @@
 "use client";
 
 import Link from "next/link";
-import {
-  Heart,
-  Share2,
-  MessageSquare,
-  Gift,
-  Mail,
-  MapPin,
-  Phone,
-} from "lucide-react";
+import Image from "next/image";
+import GearUpLogo from "../../public/gearup-logo.svg";
+import { Mail, MapPin, Phone } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
+import { SiFacebook, SiX, SiInstagram, SiLinkerd } from "react-icons/si";
 
 const footerLinks = {
   product: [
-    { label: "Browse Gear", href: "/gear" },
-    { label: "Categories", href: "/categories" },
-    { label: "Reviews", href: "/reviews" },
+    { label: "Browse Gears", href: "/gears" },
+    { label: "Top Categories", href: "/gears?categoryId=All" },
+    { label: "Rental Policy", href: "/terms" },
   ],
   company: [
-    { label: "About Us", href: "/about" },
-    { label: "Blog", href: "/blog" },
-    { label: "Careers", href: "/careers" },
+    { label: "About GearUp", href: "/about" },
+    { label: "Become a Provider", href: "/register" },
+    { label: "Careers", href: "#" },
   ],
   support: [
-    { label: "Help Center", href: "/help" },
+    { label: "Help Center", href: "#" },
     { label: "Contact Us", href: "/contact" },
-    { label: "FAQs", href: "/faqs" },
+    { label: "FAQs", href: "#" },
   ],
   legal: [
     { label: "Privacy Policy", href: "/privacy" },
     { label: "Terms of Service", href: "/terms" },
-    { label: "Cookie Policy", href: "/cookies" },
+    { label: "Cookie Policy", href: "#" },
   ],
 };
 
 const socialLinks = [
-  { icon: Heart, href: "#", label: "Like" },
-  { icon: Share2, href: "#", label: "Share" },
-  { icon: MessageSquare, href: "#", label: "Message" },
-  { icon: Gift, href: "#", label: "Rewards" },
+  { icon: SiFacebook, href: "#", label: "Facebook" },
+  { icon: SiX, href: "#", label: "Twitter" },
+  { icon: SiInstagram, href: "#", label: "Instagram" },
+  { icon: SiLinkerd, href: "#", label: "LinkedIn" },
 ];
-
 export function Footer() {
   return (
-    <footer className="border-t bg-background mt-5">
-      <div className="mx-auto max-w-6xl px-4 py-12 sm:px-6 lg:px-8">
-        {/* Main Footer Content */}
-        <div className="grid grid-cols-1 gap-8 md:grid-cols-5">
-          {/* Brand Section */}
-          <div className="space-y-4">
-            <Link href="/" className="text-lg font-semibold tracking-tight">
-              Northstar Gear
+    <footer className="border-t bg-background mt-10">
+      <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
+        <div className="grid grid-cols-1 gap-12 md:grid-cols-2 lg:grid-cols-5">
+          <div className="lg:col-span-2 space-y-6">
+            <Link
+              href="/"
+              className="inline-block transition-opacity hover:opacity-90"
+            >
+              <Image
+                src={GearUpLogo}
+                alt="GearUp Logo"
+                width={140}
+                height={40}
+                className="w-32 h-auto"
+              />
             </Link>
-            <p className="text-sm text-muted-foreground">
-              Premium outdoor gear rental for every adventure.
+            <p className="text-sm text-muted-foreground leading-relaxed max-w-xs">
+              Premium outdoor gear rental for every adventure. We connect gear
+              seekers with providers to make exploration accessible for
+              everyone.
             </p>
-            <div className="flex gap-3">
+            <div className="flex gap-4">
               {socialLinks.map((social) => (
                 <Link
                   key={social.label}
                   href={social.href}
                   aria-label={social.label}
-                  className="text-muted-foreground transition-colors hover:text-foreground"
+                  className="text-muted-foreground transition-all hover:text-green-700 hover:scale-110"
                 >
                   <social.icon className="size-5" />
                 </Link>
@@ -70,88 +73,78 @@ export function Footer() {
             </div>
           </div>
 
-          {/* Product Links */}
-          <div>
-            <h3 className="font-semibold text-foreground">Product</h3>
-            <nav className="mt-4 space-y-2">
-              {footerLinks.product.map((link) => (
-                <Link
-                  key={link.href}
-                  href={link.href}
-                  className="block text-sm text-muted-foreground transition-colors hover:text-foreground"
-                >
-                  {link.label}
-                </Link>
-              ))}
-            </nav>
-          </div>
+          <div className="grid grid-cols-2 gap-8 lg:col-span-3 md:grid-cols-3">
+            <div>
+              <h3 className="text-xs font-mono font-bold uppercase tracking-widest text-foreground">
+                Product
+              </h3>
+              <nav className="mt-4 space-y-2.5">
+                {footerLinks.product.map((link) => (
+                  <Link
+                    key={link.label}
+                    href={link.href}
+                    className="block text-sm text-muted-foreground transition-colors hover:text-green-700"
+                  >
+                    {link.label}
+                  </Link>
+                ))}
+              </nav>
+            </div>
 
-          {/* Company Links */}
-          <div>
-            <h3 className="font-semibold text-foreground">Company</h3>
-            <nav className="mt-4 space-y-2">
-              {footerLinks.company.map((link) => (
-                <Link
-                  key={link.href}
-                  href={link.href}
-                  className="block text-sm text-muted-foreground transition-colors hover:text-foreground"
-                >
-                  {link.label}
-                </Link>
-              ))}
-            </nav>
-          </div>
+            <div>
+              <h3 className="text-xs font-mono font-bold uppercase tracking-widest text-foreground">
+                Company
+              </h3>
+              <nav className="mt-4 space-y-2.5">
+                {footerLinks.company.map((link) => (
+                  <Link
+                    key={link.label}
+                    href={link.href}
+                    className="block text-sm text-muted-foreground transition-colors hover:text-green-700"
+                  >
+                    {link.label}
+                  </Link>
+                ))}
+              </nav>
+            </div>
 
-          {/* Support Links */}
-          <div>
-            <h3 className="font-semibold text-foreground">Support</h3>
-            <nav className="mt-4 space-y-2">
-              {footerLinks.support.map((link) => (
-                <Link
-                  key={link.href}
-                  href={link.href}
-                  className="block text-sm text-muted-foreground transition-colors hover:text-foreground"
-                >
-                  {link.label}
-                </Link>
-              ))}
-            </nav>
-          </div>
-
-          {/* Contact Info */}
-          <div>
-            <h3 className="font-semibold text-foreground">Get in Touch</h3>
-            <div className="mt-4 space-y-3">
-              <div className="flex gap-2 text-sm text-muted-foreground">
-                <Phone className="size-4 flex-shrink-0" />
-                <span>+1 (555) 123-4567</span>
-              </div>
-              <div className="flex gap-2 text-sm text-muted-foreground">
-                <Mail className="size-4 flex-shrink-0" />
-                <span>support@northstar.com</span>
-              </div>
-              <div className="flex gap-2 text-sm text-muted-foreground">
-                <MapPin className="size-4 flex-shrink-0" />
-                <span>123 Adventure St, CO 80210</span>
+            <div>
+              <h3 className="text-xs font-mono font-bold uppercase tracking-widest text-foreground">
+                Support
+              </h3>
+              <div className="mt-4 space-y-4">
+                <div className="flex items-start gap-3 text-sm text-muted-foreground">
+                  <Phone className="size-4 text-green-700 shrink-0 mt-0.5" />
+                  <span className="font-mono text-xs">+880 19738 24849</span>
+                </div>
+                <div className="flex items-start gap-3 text-sm text-muted-foreground">
+                  <Mail className="size-4 text-green-700 shrink-0 mt-0.5" />
+                  <span className="font-mono text-xs truncate">
+                    support@gearup.com
+                  </span>
+                </div>
+                <div className="flex items-start gap-3 text-sm text-muted-foreground">
+                  <MapPin className="size-4 text-green-700 shrink-0 mt-0.5" />
+                  <span className="text-xs">Dhaka, Bangladesh</span>
+                </div>
               </div>
             </div>
           </div>
         </div>
 
-        {/* Separator */}
-        <Separator className="my-8" />
+        <Separator className="my-10 opacity-50" />
 
-        {/* Bottom Section */}
-        <div className="flex flex-col items-center justify-between gap-4 md:flex-row">
-          <p className="text-sm text-muted-foreground">
-            &copy; 2024 Northstar Gear. All rights reserved.
+        <div className="flex flex-col items-center justify-between gap-6 md:flex-row">
+          <p className="text-xs font-mono text-muted-foreground uppercase tracking-tighter">
+            &copy; {new Date().getFullYear()} GearUp Platform. Built for
+            Millions.
           </p>
-          <nav className="flex gap-6">
+          <nav className="flex flex-wrap justify-center gap-x-8 gap-y-2">
             {footerLinks.legal.map((link) => (
               <Link
-                key={link.href}
+                key={link.label}
                 href={link.href}
-                className="text-sm text-muted-foreground transition-colors hover:text-foreground"
+                className="text-xs font-mono uppercase tracking-widest text-muted-foreground transition-colors hover:text-green-700"
               >
                 {link.label}
               </Link>
