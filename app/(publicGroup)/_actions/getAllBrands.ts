@@ -1,5 +1,7 @@
 "use server";
 
+import { updateTag } from "next/cache";
+
 export const getAllBrands = async () => {
   try {
     // 1. Fetch data with a 24-hour cache and an on-demand revalidation tag
@@ -27,7 +29,7 @@ export const getAllBrands = async () => {
       ) as string[]
     ).sort((a, b) => a.localeCompare(b));
 
-    return ["All", ...uniqueBrands];
+    return [...uniqueBrands];
   } catch (error) {
     console.error("Error in getAllBrands server action:", error);
     return ["All"];

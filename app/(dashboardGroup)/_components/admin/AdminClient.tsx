@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 import React, { useEffect, useState, useTransition } from "react";
 import { LoadingSkeleton } from "./LoadingSkeleton";
@@ -6,6 +7,7 @@ import {
   AllGears,
   AllOrders,
   AllUsers,
+  categoryResponse,
   UserStatus,
 } from "@/lib/type";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -17,20 +19,24 @@ import GearTab from "./GearTab";
 import UsersTab from "./UsersTab";
 import OverviewTab from "./OverviewTab";
 import { useRouter } from "next/navigation";
+import CategoryTab from "./CategoryTab";
 
 interface AdminPageProps {
   Users: AllUsers;
   Gear: AllGears;
   Orders: AllOrders;
+  categories: categoryResponse;
 }
 
-const AdminClient = ({ Users, Gear, Orders }: AdminPageProps) => {
-  const [tab, setTab] = useState<AdminTabtype>("overview");
+const AdminClient = ({ Users, Gear, Orders, categories }: AdminPageProps) => {
+  // Added "categories" union option to prevent type constraint errors
+  const [tab, setTab] = useState<AdminTabtype | "categories">("overview");
   const [loading, setLoading] = useState(true);
 
   const allUsers = Users?.data?.allUsers || [];
   const allGear = Gear?.data?.gearItemsList || [];
   const allOrders = Orders?.data?.allOrders || [];
+  const allCategories = categories?.data?.categoryList || [];
 
   useEffect(() => {
     const t = setTimeout(() => setLoading(false), 700);
@@ -55,7 +61,6 @@ const AdminClient = ({ Users, Gear, Orders }: AdminPageProps) => {
       if (res.success) {
         toast.success("Status updated!");
 
-        // Forces Next.js to re-fetch Server Components and update client props instantly
         startTransition(() => {
           router.refresh();
         });
@@ -83,13 +88,15 @@ const AdminClient = ({ Users, Gear, Orders }: AdminPageProps) => {
       {/* Modular Navigation View Router */}
       <Tabs
         value={tab}
-        onValueChange={(v) => setTab(v as AdminTabtype)}
+        onValueChange={(v) => setTab(v as any)}
         className="w-full"
       >
-        <TabsList className="grid w-full max-w-md grid-cols-4 font-mono text-xs uppercase tracking-wider mb-6">
+        {/* FIXED: Shifted grid layout calculation step from grid-cols-4 to grid-cols-5 */}
+        <TabsList className="grid w-full max-w-xl grid-cols-5 font-mono text-xs uppercase tracking-wider mb-6">
           <TabsTrigger value="overview">Overview</TabsTrigger>
           <TabsTrigger value="users">Users</TabsTrigger>
           <TabsTrigger value="gear">Gear</TabsTrigger>
+          <TabsTrigger value="categories">Categories</TabsTrigger>
           <TabsTrigger value="orders">Orders</TabsTrigger>
         </TabsList>
 
@@ -111,6 +118,10 @@ const AdminClient = ({ Users, Gear, Orders }: AdminPageProps) => {
 
         <TabsContent value="gear" className="mt-0">
           <GearTab allGear={allGear} />
+        </TabsContent>
+
+        <TabsContent value="categories" className="mt-0">
+          <CategoryTab allCategories={allCategories} allGear={allGear} />
         </TabsContent>
 
         <TabsContent value="orders" className="mt-0">

@@ -73,6 +73,7 @@ export const addGearItem = async (
   const result = await res.json();
   if (result.success) {
     updateTag("provider-gears");
+    updateTag("gear-items");
   }
   return result;
 };
@@ -113,6 +114,7 @@ export const updateGearItem = async (
   const result = await res.json();
   if (result.success) {
     updateTag("provider-gears");
+    updateTag("gear-items");
   }
   return result;
 };
@@ -184,18 +186,6 @@ export const getLowStockGears = async () => {
     next: {
       revalidate: 60 * 60 * 24,
       tags: ["provider-lowStock"],
-    },
-  });
-  const result = res.json();
-  return result;
-};
-
-export const getCategoryList = async () => {
-  const res = await fetch(`${process.env.BACKEND_API_URL}/api/category`, {
-    cache: "force-cache",
-    next: {
-      revalidate: 60 * 60 * 24,
-      tags: ["category"],
     },
   });
   const result = res.json();

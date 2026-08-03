@@ -12,6 +12,12 @@ const nextConfig = {
         hostname: "cdn.outsideonline.com",
         pathname: "/**",
       },
+      {
+        protocol: "https",
+        hostname: "img.magnific.com",
+        port: "",
+        pathname: "/**",
+      },
     ],
   },
 };

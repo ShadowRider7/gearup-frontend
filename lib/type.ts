@@ -442,7 +442,12 @@ export enum UserStatus {
   SUSPENDED = "SUSPENDED",
 }
 
-export type AdminTabtype = "overview" | "users" | "gear" | "orders";
+export type AdminTabtype =
+  | "overview"
+  | "users"
+  | "gear"
+  | "orders"
+  | "categories";
 
 export type reviewPayload = {
   rentalOrderId: string;

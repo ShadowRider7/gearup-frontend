@@ -39,6 +39,7 @@ export const createPayment = async (rentalOrderId: string) => {
 
   if (result.success) {
     updateTag("customer-order");
+    updateTag("payment-history");
   }
   return result;
 };

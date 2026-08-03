@@ -97,11 +97,13 @@ export const createCategory = async (
   const result = await res.json();
   if (result.success) {
     updateTag("category");
+    updateTag("gear-items");
   }
   return result;
 };
 
 export const updateCategory = async (
+  categoryId: string,
   prevState: CategoryState,
   formData: FormData,
 ) => {
@@ -111,7 +113,7 @@ export const updateCategory = async (
     description: formData.get("description") ?? "",
   };
   const res = await fetch(
-    `${process.env.BACKEND_API_URL}/api/category/create`,
+    `${process.env.BACKEND_API_URL}/api/category/${categoryId}`,
     {
       method: "PUT",
       headers: {
