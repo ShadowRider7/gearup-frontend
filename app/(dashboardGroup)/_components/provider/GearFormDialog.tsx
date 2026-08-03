@@ -175,7 +175,6 @@ export default function GearFormDialog({
               />
             </div>
 
-            {/* 🎯 Simplified Technical Specs Field */}
             <div className="md:col-span-2 space-y-1">
               <Label
                 htmlFor="specifications"

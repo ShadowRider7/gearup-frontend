@@ -1,10 +1,11 @@
 "use client";
 
 import { Package } from "lucide-react";
-import Empty from "../_components/Empty";
-import { GearCard } from "../_components/GearCard";
+import Empty from "../shared/Empty";
+
 import { Gear } from "@/lib/type";
 import { useRouter } from "next/navigation";
+import { GearCard } from "./GearCard";
 
 interface GearsProps {
   gearItems: Gear[];

@@ -3,7 +3,7 @@
 
 import React, { useTransition } from "react";
 import { Package, Activity, Clock, Bell } from "lucide-react";
-import StatCard from "../StatCard";
+import StatCard from "../shared/StatCard";
 
 import { ProviderRentalOrders, RentalStatus } from "@/lib/type";
 import { updateOrderStatus } from "../../_actions/providerDashboardActions";
@@ -34,7 +34,6 @@ export default function OverviewTab({ gearCount, orders }: OverviewTabProps) {
     <div
       className={`space-y-6 ${isPending ? "opacity-60 pointer-events-none" : ""}`}
     >
-      {/* Metrics Row */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <StatCard label="Gear Listed" value={gearCount} icon={Package} />
         <StatCard
@@ -51,7 +50,6 @@ export default function OverviewTab({ gearCount, orders }: OverviewTabProps) {
         />
       </div>
 
-      {/* Quick Confirmation Banner */}
       {pendingOrders.length > 0 && (
         <div className="bg-card border border-primary/30 rounded-xl p-4">
           <div className="flex items-center gap-2 mb-3">

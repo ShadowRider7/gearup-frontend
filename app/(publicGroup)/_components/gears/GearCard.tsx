@@ -1,10 +1,11 @@
 "use client";
 
 import { Skeleton } from "@/components/ui/skeleton";
-import { Rating } from "./Rating";
+
 import { useState } from "react";
 import Image from "next/image";
 import { Gear } from "@/lib/type";
+import { Rating } from "../shared/Rating";
 
 interface GearCardProps {
   gear: Gear;

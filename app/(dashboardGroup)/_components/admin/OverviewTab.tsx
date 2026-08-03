@@ -2,9 +2,9 @@
 
 import React from "react";
 import { Users, Package, ShoppingBag, TrendingUp } from "lucide-react";
-import StatCard from "../StatCard";
-import StatusBadge from "../StatusBadge";
-import { AllGears, AllOrders, AllUsers, GearItems } from "@/lib/type";
+import StatCard from "../shared/StatCard";
+import StatusBadge from "../shared/StatusBadge";
+import { AllGears, AllOrders, AllUsers } from "@/lib/type";
 type Role = "CUSTOMER" | "PROVIDER";
 const STATUS_CFG: Record<string, { color: string }> = {
   PENDING: { color: "#f59e0b" }, // Amber
@@ -53,7 +53,6 @@ export default function OverviewTab({
       </div>
 
       <div className="grid md:grid-cols-2 gap-4">
-        {/* User Breakdown */}
         <div className="bg-card border border-border rounded-xl p-6">
           <h3 className="font-['Barlow_Condensed'] font-bold uppercase tracking-wide text-foreground mb-5">
             User Breakdown
@@ -82,7 +81,6 @@ export default function OverviewTab({
           })}
         </div>
 
-        {/* Order Status */}
         <div className="bg-card border border-border rounded-xl p-6">
           <h3 className="font-['Barlow_Condensed'] font-bold uppercase tracking-wide text-foreground mb-5">
             Order Status

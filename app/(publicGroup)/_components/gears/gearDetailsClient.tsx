@@ -1,12 +1,12 @@
 import React from "react";
 import { MapPin } from "lucide-react";
-import { Rating } from "./Rating";
-import { Gear, GearDetailsResponse, IUser, OrderFormProps } from "@/lib/type";
+import { Rating } from "../shared/Rating";
+import { GearDetailsResponse, IUser } from "@/lib/type";
 import { getUser } from "@/service/getUser";
 import OrderForm from "./OrderForm";
 
-import { ImageGallery } from "./ImageGallery";
-import BackButton from "./BackButton";
+import { ImageGallery } from "../shared/ImageGallery";
+import BackButton from "../shared/BackButton";
 
 export async function GearDetailsClient(props: {
   gearItem: GearDetailsResponse["data"]["gearItemDetails"];
@@ -15,11 +15,9 @@ export async function GearDetailsClient(props: {
 
   const gearItem = props?.gearItem;
 
-  // 1. Safely extract user profile and role data
   const userProfile = user?.data?.userProfile;
   const userRole = userProfile?.role;
 
-  // 2. Explicitly determine if a valid user session exists
   const isLoggedIn = !!userProfile && !!userProfile.id;
 
   if (!gearItem) {
@@ -35,12 +33,10 @@ export async function GearDetailsClient(props: {
   return (
     <div className="min-h-screen bg-background">
       <div className="max-w-6xl mx-auto px-4 py-10">
-        {/* Uses browser history now */}
         <BackButton />
 
         <div className="grid lg:grid-cols-[1fr_400px] gap-12">
           <div>
-            {/* Interactive gallery state handled cleanly inside its own client shell */}
             <ImageGallery images={gearItem.images} name={gearItem.name} />
 
             <div className="mt-6 grid grid-cols-2 gap-3">
@@ -87,7 +83,6 @@ export async function GearDetailsClient(props: {
               </span>
             </div>
 
-            {/* Booking card */}
             <div className="bg-card border border-border rounded-2xl p-6 sticky top-20">
               <div className="flex items-baseline gap-2 mb-5">
                 <span className="font-['Barlow_Condensed'] font-black text-5xl text-primary">
@@ -99,7 +94,6 @@ export async function GearDetailsClient(props: {
               </div>
 
               {gearItem.isAvailable ? (
-                // Fix Step 1: Check your explicit logged-in boolean state first
                 !isLoggedIn ? (
                   <div className="text-center py-8 bg-primary/5 border border-primary/10 rounded-xl p-6">
                     <p className="text-sm font-mono text-foreground font-semibold">
@@ -116,10 +110,8 @@ export async function GearDetailsClient(props: {
                     </a>
                   </div>
                 ) : userRole === "CUSTOMER" ? (
-                  // Fix Step 2: Clear access path directly allows customer orders
                   <OrderForm user={user} gearItem={gearItem} />
                 ) : (
-                  // Fix Step 3: Falls back here only if user is logged in but is a provider/admin
                   <div className="text-center py-8 bg-muted/10 border border-dashed border-border rounded-xl p-6">
                     <p className="text-sm font-mono text-destructive font-semibold">
                       Ordering Disabled

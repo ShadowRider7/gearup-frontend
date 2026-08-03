@@ -23,20 +23,16 @@ interface ReviewModalProps {
 }
 
 export default function ReviewModal({ order, onClose }: ReviewModalProps) {
-  // Initialize to 5 stars or read existing review data if present
   const initialRating = (order as SingleOrder)?.review?.rating ?? 5;
   const [rating, setRating] = useState<number>(initialRating);
 
-  // Fix 1: Initialize open to true since parent controls mounting
   const [open, setOpen] = useState(true);
 
-  // Fix 2: bind passes order.id as the first parameter to the action
   const [state, formAction, isPending] = useActionState(
     createReview.bind(null, order.id),
     null,
   );
 
-  // Fix 3: Handle modal closure correctly when onOpenChange or onClose triggers
   const handleClose = () => {
     setOpen(false);
     onClose();
@@ -67,10 +63,8 @@ export default function ReviewModal({ order, onClose }: ReviewModalProps) {
         </DialogHeader>
 
         <form action={formAction} className="space-y-4">
-          {/* Inputs parsed natively by the server action FormData instance */}
           <input type="hidden" name="rating" value={rating} />
 
-          {/* Interactive Rating Row */}
           <div className="space-y-1.5">
             <label className="block text-xs font-mono text-muted-foreground uppercase tracking-wider">
               Rating
@@ -97,7 +91,6 @@ export default function ReviewModal({ order, onClose }: ReviewModalProps) {
             </div>
           </div>
 
-          {/* Comments Text Field */}
           <div className="space-y-1.5">
             <label className="block text-xs font-mono text-muted-foreground uppercase tracking-wider">
               Comments

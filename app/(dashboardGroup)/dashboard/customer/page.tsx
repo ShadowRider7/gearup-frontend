@@ -6,7 +6,7 @@ import {
   getCustomerPaymentHistory,
 } from "../../_actions/customerDashboardActions";
 import { Activity, DollarSign, Package } from "lucide-react";
-import StatCard from "../../_components/StatCard";
+import StatCard from "../../_components/shared/StatCard";
 import { PaymentHistory, UserRentalOrders } from "@/lib/type";
 import CustomerDashboardClient from "../../_components/customer/CustomerDashboardClient";
 
@@ -20,7 +20,6 @@ export default async function Customer() {
 
   const firstName = user?.data?.userProfile?.name?.split(" ")[0] || "User";
 
-  // Calculate lifetime dynamic spending from completed orders safely
   const totalSpent = customerOrders
     .filter((o) => ["PAID", "PICKED_UP", "RETURNED"].includes(o.status))
     .reduce((sum, o) => sum + (o.totalAmount || 0), 0);
@@ -28,7 +27,6 @@ export default async function Customer() {
   return (
     <div className="min-h-screen bg-background">
       <div className="max-w-5xl mx-auto px-4 py-10">
-        {/* Header Block */}
         <div className="flex items-start justify-between mb-8">
           <div>
             <div className="text-xs font-mono text-primary uppercase tracking-widest mb-1">
@@ -52,7 +50,6 @@ export default async function Customer() {
           )}
         </div>
 
-        {/* Analytics row grid panels layout */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
           <StatCard
             label="Total Orders"
@@ -75,7 +72,6 @@ export default async function Customer() {
           />
         </div>
 
-        {/* Client Interactive Table Layer orchestration gateway */}
         <CustomerDashboardClient
           paymentHistory={paymentHistory}
           customerOrders={customerOrders}

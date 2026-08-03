@@ -40,7 +40,6 @@ export function GearSearchBar({
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const priceDebounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  // Shared routing engine
   const executeUrlUpdate = (params: URLSearchParams) => {
     params.delete("page");
     router.replace(`${pathname}?${params.toString()}`, { scroll: false });
@@ -133,7 +132,6 @@ export function GearSearchBar({
 
       {showFilters && (
         <div className="bg-card border border-border rounded-xl p-5 mb-5 grid sm:grid-cols-3 gap-5">
-          {/* Brand Field */}
           <div>
             <label className="text-xs font-mono text-muted-foreground uppercase tracking-widest block mb-2">
               Brand
@@ -152,7 +150,6 @@ export function GearSearchBar({
             </select>
           </div>
 
-          {/* Price Range Slider */}
           <div>
             <label className="text-xs font-mono text-muted-foreground uppercase tracking-widest block mb-2">
               Max Price —{" "}
@@ -184,7 +181,6 @@ export function GearSearchBar({
               <input
                 type="checkbox"
                 checked={availOnly}
-                // FIX: Fires routing updates instantly without waiting for React cycle renders
                 onChange={(e) => {
                   updateUrlParamImmediate(
                     "isAvailable",
@@ -225,7 +221,6 @@ export function GearSearchBar({
         ))}
       </div>
 
-      {/* Global Reset Action Header */}
       {hasActiveFilters && (
         <div className="flex justify-end mb-4">
           <button

@@ -55,7 +55,7 @@ export default function OrderRow({ order, onPay, onReview }: OrderRowProps) {
         <Link href={`/gears/${gear.id}`}>
           {" "}
           <div className="flex items-center gap-3">
-            <Avatar className="w-10 h-8 rounded bg-muted flex-shrink-0 relative overflow-hidden">
+            <Avatar className="w-10 h-8 rounded bg-muted shrink-0 relative overflow-hidden">
               {gear.images && gear.images[0] ? (
                 <Image
                   src={gear.images[0]}
@@ -71,7 +71,7 @@ export default function OrderRow({ order, onPay, onReview }: OrderRowProps) {
               )}
             </Avatar>
             <div>
-              <span className="text-sm text-foreground font-medium line-clamp-1 max-w-[180px]">
+              <span className="text-sm text-foreground font-medium line-clamp-1 max-w-45">
                 {gear.name || "Unknown Item"}
               </span>
               <span className="text-[10px] font-mono text-muted-foreground block uppercase">

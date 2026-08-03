@@ -19,7 +19,7 @@ import PaymentHistoryTable from "./PaymentHistoryTable";
 import ReviewedProductsGrid from "./ReviewedProductsGrid";
 interface CustomerDashboardClientProps {
   customerOrders: UserRentalOrders["data"]["usersRentalOrders"];
-  paymentHistory: PaymentHistory["data"]; // Uses your type structure directly
+  paymentHistory: PaymentHistory["data"];
 }
 
 export type SingleOrder =
@@ -55,7 +55,6 @@ export default function CustomerDashboardClient({
     }
   };
 
-  // Filter completed/reviewed rental orders cleanly for the reviews grid tab
   const reviewedOrders = customerOrders.filter(
     (order) =>
       (order as any).review !== null && (order as any).review !== undefined,
@@ -64,14 +63,12 @@ export default function CustomerDashboardClient({
   return (
     <div className="space-y-6">
       <Tabs defaultValue="orders" className="w-full">
-        {/* Navigation Tab Triggers */}
         <TabsList className="grid w-full max-w-md grid-cols-3 font-mono text-xs uppercase tracking-wider mb-4">
           <TabsTrigger value="orders">My Orders</TabsTrigger>
           <TabsTrigger value="payments">Payment History</TabsTrigger>
           <TabsTrigger value="reviews">Reviewed Products</TabsTrigger>
         </TabsList>
 
-        {/* Tab 1: Rental Orders List */}
         <TabsContent value="orders">
           <div className="bg-card border border-border rounded-xl overflow-hidden shadow-sm">
             {customerOrders.length === 0 ? (
@@ -114,18 +111,15 @@ export default function CustomerDashboardClient({
           </div>
         </TabsContent>
 
-        {/* Tab 2: Dedicated Payment History Ledger */}
         <TabsContent value="payments">
           <PaymentHistoryTable payments={paymentHistory} />
         </TabsContent>
 
-        {/* Tab 3: Reviewed Products Cards */}
         <TabsContent value="reviews">
           <ReviewedProductsGrid items={reviewedOrders} />
         </TabsContent>
       </Tabs>
 
-      {/* Checkout Handling */}
       {selectedOrder && (
         <CheckOutModal
           order={selectedOrder}
@@ -134,7 +128,6 @@ export default function CustomerDashboardClient({
         />
       )}
 
-      {/* Review Dialog Form */}
       {reviewOrder && (
         <ReviewModal order={reviewOrder} onClose={() => setReviewOrder(null)} />
       )}

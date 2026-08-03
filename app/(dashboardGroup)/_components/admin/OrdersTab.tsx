@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/table";
 import { AdminPagination } from "./AdminPagination";
 import { AllOrders } from "@/lib/type";
-import StatusBadge from "../StatusBadge";
+import StatusBadge from "../shared/StatusBadge";
 
 const PAGE_SIZE = 10;
 
@@ -22,7 +22,6 @@ interface OrdersTabProps {
 export default function OrdersTab({ allOrders = [] }: OrdersTabProps) {
   const [page, setPage] = useState(1);
 
-  // Pagination mathematical window slicing
   const totalPages = Math.ceil(allOrders.length / PAGE_SIZE);
   const pagedOrders = allOrders.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
 

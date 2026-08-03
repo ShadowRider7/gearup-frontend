@@ -1,7 +1,7 @@
 "use client";
 
 import { Skeleton } from "@/components/ui/skeleton";
-import TableSkeleton from "../TableSkeleton";
+import TableSkeleton from "../shared/TableSkeleton";
 
 export function LoadingSkeleton() {
   return (

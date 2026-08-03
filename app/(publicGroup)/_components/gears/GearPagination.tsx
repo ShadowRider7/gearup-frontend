@@ -23,7 +23,6 @@ export function GearPagination({
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  // Helper utility to update URL parameters reactively without breaking filters
   const createPageUrl = (pageNumber: number) => {
     const params = new URLSearchParams(searchParams.toString());
     params.set("page", pageNumber.toString());
@@ -36,10 +35,9 @@ export function GearPagination({
     router.push(createPageUrl(page));
   };
 
-  // Generate numbered list blocks dynamically with smart truncation thresholds
   const renderPageNumbers = () => {
     const items = [];
-    const maxVisible = 3; // Controls central button volume count boundaries
+    const maxVisible = 3;
 
     let startPage = Math.max(1, currentPage - 1);
     const endPage = Math.min(totalPages, startPage + maxVisible - 1);
@@ -48,7 +46,6 @@ export function GearPagination({
       startPage = Math.max(1, endPage - maxVisible + 1);
     }
 
-    // Always render Page 1 first
     if (startPage > 1) {
       items.push(
         <PaginationItem key={1}>
@@ -70,7 +67,6 @@ export function GearPagination({
       }
     }
 
-    // Render bounded middle sequence
     for (let i = startPage; i <= endPage; i++) {
       items.push(
         <PaginationItem key={i}>
@@ -85,7 +81,6 @@ export function GearPagination({
       );
     }
 
-    // Always render Last Page index safely
     if (endPage < totalPages) {
       if (endPage < totalPages - 1) {
         items.push(
@@ -113,7 +108,6 @@ export function GearPagination({
   return (
     <Pagination className="mt-8">
       <PaginationContent>
-        {/* Previous Button control */}
         <PaginationItem>
           <PaginationPrevious
             href={currentPage > 1 ? createPageUrl(currentPage - 1) : "#"}
@@ -127,10 +121,8 @@ export function GearPagination({
           />
         </PaginationItem>
 
-        {/* Dynamic Inner Numeric Ranges Grid */}
         {renderPageNumbers()}
 
-        {/* Next Button control */}
         <PaginationItem>
           <PaginationNext
             href={

@@ -10,7 +10,6 @@ interface CategoryTabProps {
 }
 
 const CategoryTab = ({ allCategories, allGear }: CategoryTabProps) => {
-  // Counts matching gear items by checking reference fields dynamically
   const getGearCount = (categoryId: string) => {
     return allGear.filter(
       (gear) => (gear.category?.id || gear.categoryId) === categoryId,
@@ -19,7 +18,6 @@ const CategoryTab = ({ allCategories, allGear }: CategoryTabProps) => {
 
   return (
     <div className="space-y-6">
-      {/* Header and Creation Row */}
       <div className="flex justify-between items-center">
         <h2 className="text-xl font-mono uppercase tracking-wider text-foreground">
           Manage Categories
@@ -27,7 +25,6 @@ const CategoryTab = ({ allCategories, allGear }: CategoryTabProps) => {
         <CategoryFormDialog mode="create" />
       </div>
 
-      {/* Main Categories Table */}
       <div className="border border-border rounded-md overflow-hidden bg-card">
         <table className="w-full text-left border-collapse">
           <thead>

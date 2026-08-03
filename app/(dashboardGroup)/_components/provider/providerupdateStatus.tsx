@@ -63,7 +63,7 @@ export default function OrderStatusSelect({
       </label>
 
       <select
-        value="" // Acts as a dummy clean fallback display wrapper
+        value=""
         disabled={isPending}
         onChange={(e) => handleStatusChange(e.target.value as RentalStatus)}
         className="w-full px-3 py-2 text-sm bg-white border border-gray-300 rounded-md shadow-sm outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 disabled:bg-gray-100 disabled:text-gray-400 cursor-pointer"

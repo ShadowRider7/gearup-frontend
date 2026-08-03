@@ -22,7 +22,7 @@ export default function GearTableRow({
     <tr className="border-b border-border last:border-0 hover:bg-muted/10 transition-colors">
       <td className="px-4 py-3">
         <div className="flex items-center gap-3">
-          <Avatar className="w-10 h-8 rounded bg-muted flex-shrink-0 relative overflow-hidden">
+          <Avatar className="w-10 h-8 rounded bg-muted shrink-0 relative overflow-hidden">
             {item.images && item.images[0] ? (
               <Image
                 src={item.images[0]}
@@ -64,7 +64,6 @@ export default function GearTableRow({
 
       <td className="px-4 py-3">
         <div className="flex items-center gap-3">
-          {/* Pass item object directly down into edit mode dialog component context */}
           <GearFormDialog categories={categories} mode="edit" item={item} />
 
           <button

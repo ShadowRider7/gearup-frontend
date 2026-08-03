@@ -5,6 +5,7 @@ import React, { useState } from "react";
 import Image from "next/image";
 import { createPayment } from "../../_actions/customerDashboardActions";
 import { RentalOrder } from "@/lib/type";
+import { X } from "lucide-react";
 
 interface ModalProps {
   order: RentalOrder["data"]["rentalOrder"];
@@ -29,11 +30,9 @@ export default function CheckOutModal({
     try {
       const result = await createPayment(order.id);
 
-      // Explicitly check for the nested string property
       if (result && result.success && result.data?.paymentUrl) {
         console.log("Raw Server Action Result Data:", result.data);
 
-        // PASS ONLY THE STRING URL, NOT THE WHOLE OBJECT
         onPaymentSuccess(result.data.paymentUrl);
       } else {
         setErrorMsg(
@@ -59,7 +58,6 @@ export default function CheckOutModal({
         className="bg-card border border-border rounded-t-2xl sm:rounded-2xl w-full sm:max-w-md shadow-2xl overflow-hidden"
         onClick={(e) => e.stopPropagation()}
       >
-        {/* Modal Top Ribbon Info Row Layout */}
         <div className="flex items-center justify-between px-6 py-5 border-b border-border bg-white">
           <span className="font-['Barlow_Condensed'] font-bold text-xl uppercase tracking-wider text-foreground">
             Secure Booking Checkout
@@ -68,12 +66,11 @@ export default function CheckOutModal({
             onClick={onClose}
             className="text-muted-foreground hover:text-foreground transition-colors p-1 text-xl font-sans"
           >
-            ×
+            <X></X>
           </button>
         </div>
 
         <div className="p-6 bg-white">
-          {/* Predefined Item Meta Details Block Row Layout */}
           <div className="flex gap-3 mb-5 p-3 bg-muted/10 border border-border/40 rounded-xl">
             <div className="w-16 h-12 relative overflow-hidden rounded-lg bg-muted shrink-0">
               <Image
@@ -101,7 +98,6 @@ export default function CheckOutModal({
             </div>
           </div>
 
-          {/* Locked Read-Only Dates Display Component Box Layout */}
           <div className="grid grid-cols-3 gap-3 mb-4 bg-muted/5 border p-3 rounded-lg text-xs font-mono">
             <div>
               <span className="text-muted-foreground block uppercase text-[10px] tracking-wider mb-0.5">
@@ -133,7 +129,6 @@ export default function CheckOutModal({
             <p className="text-xs text-red-500 font-mono mb-3">{errorMsg}</p>
           )}
 
-          {/* Financial Totals Breakdown Ledger Block Elements Row Item Lines Container */}
           <div className="space-y-2 py-4 border-t border-b border-border mb-5 text-sm">
             <div className="flex justify-between font-semibold pt-1 border-t border-dashed mt-1">
               <span className="font-['Barlow_Condensed'] text-base uppercase tracking-wider">
@@ -145,7 +140,6 @@ export default function CheckOutModal({
             </div>
           </div>
 
-          {/* Action Trigger Buttons Stack Elements Area Section Block */}
           <div className="space-y-2">
             <button
               onClick={handlePaySubmit}

@@ -19,7 +19,6 @@ export function AdminPagination({
   label,
   onPageChange,
 }: AdminPaginationProps) {
-  // If there's only 1 page or less, hide pagination elements entirely to save layout vertical space
   if (totalPages <= 1) return null;
 
   return (

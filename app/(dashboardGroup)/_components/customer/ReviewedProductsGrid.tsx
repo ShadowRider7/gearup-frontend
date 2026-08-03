@@ -38,7 +38,6 @@ export default function ReviewedProductsGrid({
                   </p>
                 </div>
 
-                {/* Dynamic Star Loop Rendering */}
                 <div className="flex gap-0.5">
                   {[1, 2, 3, 4, 5].map((star) => (
                     <Star
@@ -54,11 +53,10 @@ export default function ReviewedProductsGrid({
                 </div>
               </div>
 
-              {/* Feed Text Container Box Node */}
               <div className="bg-muted/30 border border-border/60 rounded-lg p-3 flex gap-2.5 items-start">
                 <MessageSquare
                   size={14}
-                  className="text-muted-foreground mt-0.5 flex-shrink-0"
+                  className="text-muted-foreground mt-0.5 shrink-0"
                 />
                 <p className="text-xs text-foreground italic leading-relaxed">
                   &ldquo;{review.comment || "No comment left."}&rdquo;

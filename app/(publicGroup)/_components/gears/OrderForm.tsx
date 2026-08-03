@@ -3,20 +3,18 @@
 import { useActionState, useEffect, useState } from "react";
 import { X, Loader2 } from "lucide-react";
 import { OrderFormProps } from "@/lib/type";
-import { createOrder } from "../_actions/createOrder";
+import { createOrder } from "../../_actions/createOrder";
 import { toast } from "sonner";
 
 export default function OrderForm({ gearItem, user }: OrderFormProps) {
   const [state, formAction, isPending] = useActionState(createOrder, null);
 
-  // Keep simple separate states to drive the real-time pricing calculation view
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const [quantity, setQuantity] = useState(1);
 
   const todayString = new Date().toISOString().split("T")[0];
 
-  // Side-effect notification block triggered on execution state return values
   useEffect(() => {
     if (!state) return;
     if (state.success) {
@@ -26,7 +24,6 @@ export default function OrderForm({ gearItem, user }: OrderFormProps) {
     }
   }, [state]);
 
-  // Derived calculation variables computed dynamically during standard render passes
   const start = new Date(startDate);
   const end = new Date(endDate);
   const diffTime = end.getTime() - start.getTime();
@@ -89,7 +86,6 @@ export default function OrderForm({ gearItem, user }: OrderFormProps) {
         />
       </div>
 
-      {/* Renders summary element automatically when correct bounds match */}
       {isValidRange && (
         <div className="flex justify-between items-center py-3 border-t border-border">
           <span className="text-sm font-mono text-muted-foreground inline-flex items-center gap-1.5">

@@ -29,7 +29,6 @@ interface AdminPageProps {
 }
 
 const AdminClient = ({ Users, Gear, Orders, categories }: AdminPageProps) => {
-  // Added "categories" union option to prevent type constraint errors
   const [tab, setTab] = useState<AdminTabtype | "categories">("overview");
   const [loading, setLoading] = useState(true);
 
@@ -75,7 +74,6 @@ const AdminClient = ({ Users, Gear, Orders, categories }: AdminPageProps) => {
   if (loading) return <LoadingSkeleton />;
   return (
     <div className="max-w-6xl mx-auto px-4 py-10">
-      {/* Isolated Header Row */}
       <div className="mb-8">
         <div className="text-xs font-mono text-primary uppercase tracking-widest mb-1">
           Admin Dashboard
@@ -85,13 +83,11 @@ const AdminClient = ({ Users, Gear, Orders, categories }: AdminPageProps) => {
         </h1>
       </div>
 
-      {/* Modular Navigation View Router */}
       <Tabs
         value={tab}
         onValueChange={(v) => setTab(v as any)}
         className="w-full"
       >
-        {/* FIXED: Shifted grid layout calculation step from grid-cols-4 to grid-cols-5 */}
         <TabsList className="grid w-full max-w-xl grid-cols-5 font-mono text-xs uppercase tracking-wider mb-6">
           <TabsTrigger value="overview">Overview</TabsTrigger>
           <TabsTrigger value="users">Users</TabsTrigger>

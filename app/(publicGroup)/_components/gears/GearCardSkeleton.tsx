@@ -1,6 +1,5 @@
 import { Skeleton } from "@/components/ui/skeleton";
 
-// 1. Single Card Component
 export function GearCardSkeletonItem() {
   return (
     <div className="bg-card border border-border rounded-xl overflow-hidden">
@@ -18,9 +17,7 @@ export function GearCardSkeletonItem() {
   );
 }
 
-// 2. Parent Layout Grid Wrapper Component (Matches the layout structure of <Gears />)
 export function GearCardSkeleton() {
-  // Generates an array of 8 dummy slots to fill the empty grid container
   const skeletonCards = Array.from({ length: 8 });
 
   return (

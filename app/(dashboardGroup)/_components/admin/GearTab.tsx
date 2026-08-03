@@ -13,6 +13,7 @@ import {
 } from "@/components/ui/table";
 import { AllGears } from "@/lib/type";
 import { AdminPagination } from "./AdminPagination";
+import Image from "next/image";
 
 const PAGE_SIZE = 5;
 
@@ -24,7 +25,6 @@ export default function GearTab({ allGear }: GearTabProps) {
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
 
-  // Filters catalog entries by Item Title, Category name, or Provider name string matrices
   const filteredGear = allGear.filter(
     (g) =>
       g.name?.toLowerCase().includes(search.toLowerCase()) ||
@@ -40,7 +40,6 @@ export default function GearTab({ allGear }: GearTabProps) {
 
   return (
     <div className="space-y-4">
-      {/* Search Filtering Input */}
       <div className="relative">
         <Search
           size={15}
@@ -50,14 +49,13 @@ export default function GearTab({ allGear }: GearTabProps) {
           value={search}
           onChange={(e) => {
             setSearch(e.target.value);
-            setPage(1); // Safely sets index window back to boundary root on query shifts
+            setPage(1);
           }}
           placeholder="Search gear listings by item name, provider, or category..."
           className="pl-9 bg-card border-border h-10 shadow-sm"
         />
       </div>
 
-      {/* Tabular Layout Container */}
       <div className="bg-card border border-border rounded-xl overflow-hidden shadow-sm">
         <Table>
           <TableHeader>
@@ -89,17 +87,15 @@ export default function GearTab({ allGear }: GearTabProps) {
                   className="hover:bg-muted/10 transition-colors"
                 >
                   <TableCell className="px-4 py-3">
-                    <div className="flex items-center gap-3">
-                      {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img
-                        src={
-                          g.images && g.images[0]
-                            ? g.images[0]
-                            : "/placeholder-image.png"
-                        }
+                    <div className="relative h-10 w-10 flex items-center gap-3">
+                      <Image
+                        src={g.images[0] || "/placeholder-image.png"}
                         alt={g.name || "Gear listing"}
-                        className="w-10 h-8 object-cover rounded bg-muted border border-border/40"
+                        fill
+                        className="object-cover"
+                        sizes="40px"
                       />
+
                       <span className="text-sm font-medium text-foreground">
                         {g.name}
                       </span>

@@ -1,12 +1,22 @@
 import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import Link from "next/link";
 import { getCategoryList } from "./_actions/getAllCategory";
-import { Category, categoryResponse, GearItems } from "@/lib/type";
+import { categoryResponse, GearItems } from "@/lib/type";
 import { getGearList } from "./_actions/getAllGears";
-import { GearCard } from "./_components/GearCard";
+import { GearCard } from "./_components/gears/GearCard";
+import {
+  CheckCircle2,
+  DollarSign,
+  ShieldCheck,
+  Sparkles,
+  Truck,
+} from "lucide-react";
+import { getUser } from "@/service/getUser";
+import Image from "next/image";
 
 export default async function HomePage() {
+  const user = await getUser();
   const categoryResponse: categoryResponse = await getCategoryList();
   const category = categoryResponse.data.categoryList || [];
 
@@ -16,133 +26,143 @@ export default async function HomePage() {
   const gearItems = gearResponse.data.gearItemsList.data || [];
   const featured = gearItems.filter((gear) => gear.averageRating >= 4);
   return (
-    <div className="min-h-screen bg-background">
-      {/* Hero Section */}
-      <div className="relative h-72 md:h-[420px] overflow-hidden">
-        <img
+    <div className="min-h-screen bg-background text-foreground antialiased space-y-20 pb-20">
+      <div className="relative h-[65vh] min-h-112.5 overflow-hidden flex items-center justify-center text-center px-4 bg-muted">
+        <Image
           src="https://images.unsplash.com/photo-1464207687429-7505649dae38?w=1600&h=600&fit=crop&auto=format"
-          alt="Adventure landscape"
-          className="w-full h-full object-cover"
+          alt="Hero landscape"
+          fill
+          priority
+          sizes="100vw"
+          className="object-cover opacity-80"
         />
-        <div className="absolute inset-0 bg-gradient-to-b from-black/25 via-black/55 to-background" />
-        <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-4">
-          <div className="text-xs font-mono text-primary uppercase tracking-[0.35em] mb-4">
-            Sports &amp; Outdoor Equipment Rental
+        <div className="absolute inset-0 bg-linear-to-t from-background via-background/20 to-black/40" />
+
+        <div className="relative max-w-3xl space-y-6">
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-primary/10 border border-primary/20 text-xs font-medium text-primary uppercase tracking-wider backdrop-blur-md">
+            <Sparkles className="h-3 w-3" /> Sports & Outdoor Rentals
           </div>
-          <h1 className="font-['Barlow_Condensed'] font-black text-5xl md:text-7xl uppercase text-white tracking-tight leading-[0.9] mb-5">
+          <h1 className="font-extrabold text-4xl sm:text-6xl tracking-tight text-white uppercase leading-none">
             Gear Up.
             <br />
-            <span className="text-primary">Adventure Awaits.</span>
+            <span className="bg-linear-to-r from-primary to-primary/70 bg-clip-text text-transparent">
+              Adventure Awaits.
+            </span>
           </h1>
-          <p className="text-sm text-white/60 max-w-sm">
+          <p className="text-sm sm:text-base text-white/80 max-w-md mx-auto">
             Rent premium gear from verified providers. Pick dates, pay securely,
-            and go.
+            and hit the trail.
           </p>
         </div>
       </div>
 
-      {/* Categories Section */}
-      <section className="max-w-7xl mx-auto px-4 py-16">
-        <h2 className="text-3xl font-bold text-slate-900 mb-8">
+      <section className="max-w-7xl mx-auto px-4">
+        <h2 className="text-2xl font-bold tracking-tight mb-6">
           Popular Categories
         </h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           {popularCategory.map((cat) => (
-            <Link key={cat.name} href={`/gears?categoryId=${cat.id}`}>
-              <Card className="p-6 text-center hover:shadow-lg transition-shadow cursor-pointer h-full flex flex-col items-center justify-center">
-                <div className="text-4xl mb-3">{cat.name}</div>
-                <h3 className="font-semibold text-slate-900 mb-1">
-                  {cat.name}
-                </h3>
-                <p className="text-sm text-slate-600">
-                  {cat.gearItems.length} items
-                </p>
+            <Link
+              key={cat.id}
+              href={`/gears?categoryId=${cat.id}`}
+              className="group"
+            >
+              <Card className="h-full hover:border-primary/40 hover:shadow-md transition-all">
+                <CardContent className="p-6 flex flex-col items-center text-center gap-2">
+                  <div className="text-3xl h-12 w-12 flex items-center justify-center rounded-xl bg-muted group-hover:bg-primary/10 group-hover:text-primary transition-colors">
+                    🏕️
+                  </div>
+                  <h3 className="font-bold tracking-tight">{cat.name}</h3>
+                  <p className="text-xs text-muted-foreground bg-muted px-2 py-0.5 rounded-full">
+                    {cat.gearItems.length} items
+                  </p>
+                </CardContent>
               </Card>
             </Link>
           ))}
         </div>
       </section>
 
-      {/* Featured Gear Section */}
-      <section className="max-w-7xl mx-auto px-4 py-16">
-        <div className="flex justify-between items-center mb-8">
-          <h2 className="text-3xl font-bold text-slate-900">Featured Gear</h2>
-          <Link href="/gears">
-            <Button variant="outline">View All</Button>
-          </Link>
+      <section className="max-w-7xl mx-auto px-4">
+        <div className="flex justify-between items-end mb-6">
+          <h2 className="text-2xl font-bold tracking-tight">Featured Gear</h2>
+          <Button variant="outline" size="sm" asChild>
+            <Link href="/gears">View All</Link>
+          </Button>
         </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {featured.map((gear) => (
-            <Link key={gear.id} href={`/gears/${gear.id}`}>
+            <Link
+              key={gear.id}
+              href={`/gears/${gear.id}`}
+              className="hover:scale-[1.01] transition-transform"
+            >
               <GearCard gear={gear} />
             </Link>
           ))}
         </div>
       </section>
 
-      {/* Stats Section */}
-      <section className="bg-white py-16 px-4">
-        <div className="max-w-7xl mx-auto">
-          <h2 className="text-3xl font-bold text-slate-900 mb-12 text-center">
-            Why Choose GearUp
-          </h2>
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-            <Card className="p-6 text-center">
-              <div className="text-4xl mb-4">✓</div>
-              <h3 className="font-semibold text-slate-900 mb-2">
-                Quality Gear
-              </h3>
-              <p className="text-slate-600">
-                All equipment is carefully maintained and regularly inspected
-              </p>
+      <section className="max-w-7xl mx-auto px-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          {[
+            {
+              icon: <CheckCircle2 />,
+              title: "Quality Gear",
+              desc: "Carefully maintained and inspected equipment.",
+            },
+            {
+              icon: <DollarSign />,
+              title: "Affordable Prices",
+              desc: "Save up to 80% compared to buying new.",
+            },
+            {
+              icon: <Truck />,
+              title: "Easy Pickup",
+              desc: "Convenient local pickup and rental windows.",
+            },
+            {
+              icon: <ShieldCheck />,
+              title: "Secure & Insured",
+              desc: "All transactions and rentals are fully covered.",
+            },
+          ].map((item, idx) => (
+            <Card key={idx} className="bg-muted/40 border-none">
+              <CardContent className="p-5 flex gap-4 items-start">
+                <div className="p-2 rounded-lg bg-background text-primary border shadow-sm">
+                  {item.icon}
+                </div>
+                <div>
+                  <h3 className="font-semibold text-sm mb-1">{item.title}</h3>
+                  <p className="text-xs text-muted-foreground leading-normal">
+                    {item.desc}
+                  </p>
+                </div>
+              </CardContent>
             </Card>
-
-            <Card className="p-6 text-center">
-              <div className="text-4xl mb-4">💰</div>
-              <h3 className="font-semibold text-slate-900 mb-2">
-                Affordable Prices
-              </h3>
-              <p className="text-slate-600">
-                Save up to 80% compared to purchasing your own equipment
-              </p>
-            </Card>
-
-            <Card className="p-6 text-center">
-              <div className="text-4xl mb-4">🚚</div>
-              <h3 className="font-semibold text-slate-900 mb-2">Easy Pickup</h3>
-              <p className="text-slate-600">
-                Convenient pickup locations and flexible rental periods
-              </p>
-            </Card>
-
-            <Card className="p-6 text-center">
-              <div className="text-4xl mb-4">🛡️</div>
-              <h3 className="font-semibold text-slate-900 mb-2">
-                Secure & Insured
-              </h3>
-              <p className="text-slate-600">
-                All rentals are fully insured for your peace of mind
-              </p>
-            </Card>
-          </div>
+          ))}
         </div>
       </section>
 
-      {/* CTA Section */}
-      <section className="bg-blue-600 text-white py-12 px-4">
-        <div className="max-w-7xl mx-auto text-center">
-          <h2 className="text-3xl font-bold mb-4">Ready to Start?</h2>
-          <p className="text-lg text-blue-100 mb-6">
-            Join thousands of satisfied customers renting quality gear
-          </p>
-          <Link href="/auth/register">
-            <Button size="lg" variant="secondary">
-              Sign Up Today
+      {!user && (
+        <section className="max-w-7xl mx-auto px-4">
+          <div className="bg-primary text-primary-foreground p-8 rounded-2xl text-center space-y-4 relative overflow-hidden">
+            <h2 className="text-2xl font-bold text-white">Ready to Start?</h2>
+            <p className="text-sm text-primary-foreground/80 max-w-sm mx-auto">
+              Join thousands of adventurers renting quality gear safely on their
+              own terms.
+            </p>
+            <Button
+              size="lg"
+              variant="secondary"
+              asChild
+              className="font-semibold shadow-sm"
+            >
+              <Link href="/auth/register">Sign Up Today</Link>
             </Button>
-          </Link>
-        </div>
-      </section>
+          </div>
+        </section>
+      )}
     </div>
   );
 }

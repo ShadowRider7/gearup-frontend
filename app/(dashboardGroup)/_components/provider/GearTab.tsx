@@ -33,7 +33,6 @@ export default function GearTab({ gear, categories }: GearTabProps) {
   return (
     <div className={isPending ? "opacity-60 pointer-events-none" : ""}>
       <div className="flex justify-end mb-4">
-        {/* Isolated dynamic creation overlay instance */}
         <GearFormDialog categories={categories} mode="create" />
       </div>
 

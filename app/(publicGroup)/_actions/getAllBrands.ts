@@ -1,24 +1,20 @@
 "use server";
 
-import { updateTag } from "next/cache";
-
 export const getAllBrands = async () => {
   try {
-    // 1. Fetch data with a 24-hour cache and an on-demand revalidation tag
-    const res = await fetch(`${process.env.BACKEND_API_URL}/api/gear`, {
+    const res = await fetch(`${process.env.BACKEND_API_URL}/api/admin/gear`, {
       next: {
-        revalidate: 60 * 60 * 24, // Cache for 24 hours
-        tags: ["brands", "gears"], // Tagged so you can clear it when items change
+        revalidate: 60 * 60 * 24,
+        tags: ["brands", "gears"],
       },
     });
 
     const result = await res.json();
 
-    const gears = Array.isArray(result?.data?.gearItemsList?.data)
-      ? result.data.gearItemsList.data
+    const gears = Array.isArray(result?.data?.gearItemsList)
+      ? result.data.gearItemsList
       : [];
 
-    // 2. Extract unique brands out of cached response
     const uniqueBrands = (
       Array.from(
         new Set(
@@ -32,6 +28,6 @@ export const getAllBrands = async () => {
     return [...uniqueBrands];
   } catch (error) {
     console.error("Error in getAllBrands server action:", error);
-    return ["All"];
+    return [];
   }
 };

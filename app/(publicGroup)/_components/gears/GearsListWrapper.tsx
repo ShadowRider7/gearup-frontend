@@ -1,5 +1,5 @@
 import Gears from "./Gear";
-import { getGearList } from "../_actions/getAllGears";
+import { getGearList } from "../../_actions/getAllGears";
 import { GearPagination } from "./GearPagination";
 import { GearItems } from "@/lib/type";
 
@@ -10,7 +10,6 @@ interface GearsListWrapperProps {
 export default async function GearsListWrapper({
   query,
 }: GearsListWrapperProps) {
-  // Only this fetch runs when clicking the pagination buttons
   const gearsResponse = (await getGearList(query)) as GearItems;
 
   const gearItems = gearsResponse?.data?.gearItemsList?.data || [];

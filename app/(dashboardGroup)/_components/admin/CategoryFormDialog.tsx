@@ -33,7 +33,6 @@ export default function CategoryFormDialog({
 }: CategoryFormDialogProps) {
   const [open, setOpen] = useState(false);
 
-  // FIXED: Normalized signatures using .bind so functions pass without executing early
   const action =
     mode === "edit" && item
       ? updateCategory.bind(null, item.id)
@@ -80,7 +79,6 @@ export default function CategoryFormDialog({
 
         <form action={formAction} key={item?.id} className="space-y-4">
           <div className="space-y-4">
-            {/* Category Name */}
             <div className="space-y-1">
               <Label
                 htmlFor="name"
@@ -91,7 +89,6 @@ export default function CategoryFormDialog({
               <Input id="name" name="name" defaultValue={item?.name} required />
             </div>
 
-            {/* Description */}
             <div className="space-y-1">
               <Label
                 htmlFor="description"

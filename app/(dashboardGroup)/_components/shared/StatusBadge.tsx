@@ -44,15 +44,12 @@ const FALLBACK_CFG = {
 };
 
 interface StatusBadgeProps {
-  // Broadened type to accept string safely from backend API types
   status: OrderStatus | string;
 }
 
 const StatusBadge = ({ status }: StatusBadgeProps) => {
-  // Convert incoming string to uppercase to avoid mismatch bugs (e.g., "placed" -> "PLACED")
   const normalizedStatus = (status || "").toUpperCase() as OrderStatus;
 
-  // Use config layout if it exists, otherwise fall back gracefully
   const c = STATUS_CFG[normalizedStatus] || FALLBACK_CFG;
 
   return (
@@ -61,7 +58,7 @@ const StatusBadge = ({ status }: StatusBadgeProps) => {
       style={{
         color: c.color,
         background: c.bg,
-        border: `1px solid ${c.color}33`, // Append opacity hex suffix cleanly
+        border: `1px solid ${c.color}33`,
       }}
     >
       {c.label}
