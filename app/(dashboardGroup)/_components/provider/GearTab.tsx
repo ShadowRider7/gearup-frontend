@@ -40,7 +40,6 @@ export default function GearTab({ gear, categories }: GearTabProps) {
     <div
       className={`space-y-4 ${isPending ? "opacity-60 pointer-events-none transition-opacity" : ""}`}
     >
-      {/* Creation Actions Layout Panel */}
       <div className="flex justify-end">
         <GearFormDialog categories={categories} mode="create" />
       </div>

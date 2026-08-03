@@ -7,7 +7,7 @@ import StatusBadge from "../shared/StatusBadge";
 import { AllGears, AllOrders, AllUsers } from "@/lib/type";
 type Role = "CUSTOMER" | "PROVIDER";
 const STATUS_CFG: Record<string, { color: string }> = {
-  PENDING: { color: "#f59e0b" }, // Amber
+  PLACED: { color: "#f59e0b" }, // Amber
   CONFIRMED: { color: "#3b82f6" }, // Blue
   PAID: { color: "#10b981" }, // Emerald
   PICKED_UP: { color: "#8b5cf6" }, // Purple
