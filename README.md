@@ -6,7 +6,7 @@ GearUp is a modern, responsive Next.js (App Router) frontend for a sports and ou
 
 This is the **frontend-only** application. It consumes the [GearUp backend REST API](https://github.com/ShadowRider7/gearUp-backend).
 
-- **Live App:** _add your Vercel URL here_
+- **Live App:** https://gearup-frontend-zeta.vercel.app/
 - **Backend API:** https://gear-up-backend-theta.vercel.app
 - **Backend Repo:** https://github.com/ShadowRider7/gearUp-backend
 - **API ↔ UI mapping:** see [`API_INTEGRATION.md`](./API_INTEGRATION.md)
