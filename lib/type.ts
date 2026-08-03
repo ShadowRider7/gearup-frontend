@@ -172,6 +172,23 @@ export type Category = {
   description: string;
   createdAt: string;
   updatedAt: string;
+  gearItems: [
+    {
+      id: string;
+      providerId: string;
+      categoryId: string;
+      name: string;
+      description: string;
+      brand: string;
+      pricePerDay: number;
+      stock: number;
+      images: string[];
+      specifications: Record<string, string | boolean | number>;
+      isAvailable: boolean;
+      createdAt: string;
+      updatedAt: string;
+    },
+  ];
 };
 
 export interface OrderFormProps {

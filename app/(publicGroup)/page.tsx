@@ -2,13 +2,18 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import Link from "next/link";
 import { getCategoryList } from "./_actions/getAllCategory";
+import { Category, GearItems } from "@/lib/type";
 import { getGearList } from "./_actions/getAllGears";
-import { getAllBrands } from "./_actions/getAllBrands";
+import { GearCard } from "./_components/GearCard";
 
 export default async function HomePage() {
-  const category = await getCategoryList();
+  const category: Category[] = await getCategoryList();
 
-  // const gearitems = await getGearList();
+  const popularCategory = category.filter((cat) => cat.gearItems.length >= 1);
+
+  const gearResponse: GearItems = await getGearList();
+  const gearItems = gearResponse.data.gearItemsList.data || [];
+  const featured = gearItems.filter((gear) => gear.averageRating >= 4);
   return (
     <div className="min-h-screen bg-background">
       {/* Hero Section */}
@@ -40,18 +45,20 @@ export default async function HomePage() {
         <h2 className="text-3xl font-bold text-slate-900 mb-8">
           Popular Categories
         </h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-4">
-          {/* {CATEGORIES.map((cat) => (
-            <Link key={cat.name} href={`/gear?categoryId=${cat.name}`}>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          {popularCategory.map((cat) => (
+            <Link key={cat.name} href={`/gears?categoryId=${cat.id}`}>
               <Card className="p-6 text-center hover:shadow-lg transition-shadow cursor-pointer h-full flex flex-col items-center justify-center">
-                <div className="text-4xl mb-3">{cat.icon}</div>
+                <div className="text-4xl mb-3">{cat.name}</div>
                 <h3 className="font-semibold text-slate-900 mb-1">
                   {cat.name}
                 </h3>
-                <p className="text-sm text-slate-600">{cat.count} items</p>
+                <p className="text-sm text-slate-600">
+                  {cat.gearItems.length} items
+                </p>
               </Card>
             </Link>
-          ))} */}
+          ))}
         </div>
       </section>
 
@@ -59,25 +66,17 @@ export default async function HomePage() {
       <section className="max-w-7xl mx-auto px-4 py-16">
         <div className="flex justify-between items-center mb-8">
           <h2 className="text-3xl font-bold text-slate-900">Featured Gear</h2>
-          <Link href="/gear">
+          <Link href="/gears">
             <Button variant="outline">View All</Button>
           </Link>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {/* {FEATURED_GEAR.map((gear) => (
-            <Link key={gear.id} href={`/gear/${gear.id}`}>
-              <GearCard
-                name={gear.name}
-                brand={gear.brand}
-                price={gear.price}
-                image={gear.image}
-                category={gear.category}
-                rating={gear.rating}
-                inStock={gear.inStock}
-              />
+          {featured.map((gear) => (
+            <Link key={gear.id} href={`/gears/${gear.id}`}>
+              <GearCard gear={gear} />
             </Link>
-          ))} */}
+          ))}
         </div>
       </section>
 
